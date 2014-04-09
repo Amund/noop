@@ -1,1 +1,1 @@
-<?php$data = array(	'title'=>'Welcome to Noop !',	'content'=>'This is a sample page.',	'list'=>array( 'key1'=>'value1', 'key2'=>'value2' ));noop::view( 'welcome', $data );noop::output( NULL, 'html' );
+<?php$data = array(	'title'=>'Welcome to Noop !',	'content'=>'This is a sample page.',	'list'=>array( 'key1'=>'value1', 'key2'=>'value2' ));echo noop::view( 'welcome', $data );noop::output( NULL, 'html' );
