@@ -463,12 +463,11 @@ Get a value from an array, based on a virtual `$path` to its key.
 
 
 <a name="method-inspect"></a>
-### noop::inspect( [`$path`[, `$return`[, `$arr`]]] ) [^](#noop)
+### noop::inspect( [`$path`[, `$arr`]] ) [^](#noop)
 Development tool to inspect variable in a readable way.
 
 ###### Parameters
 - `$path` Optional, String. The "virtual" path to the key. Default to `''`
-- `$return` Optional, Boolean. If `TRUE`, return the print-formatted output, else print it. Default to `FALSE`
 - `$arr` Optional, Array. If omitted, the NOOP registry is used.
 
 ###### Return
