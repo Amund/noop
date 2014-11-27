@@ -63,7 +63,7 @@ However, to stay in a NOOP way, you can store your classes in the folder `secure
 Then add your favorite PHP autoload, perhaps in `index.php` (at the root folder of NOOP). For example :
 
     function __autoload( $c ) {
-		$f = noop::get( 'config/path/model' ).DIRECTORY_SEPARATOR.$c.'.php';;
+		$f = noop::get( 'config/path/model' ).DIRECTORY_SEPARATOR.$c.'.php';
 		if( !is_file( $f ) )
 			throw new Exception( 'Classe "'.$c.'" introuvable' );
 		require_once $f;
