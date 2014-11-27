@@ -13,16 +13,16 @@
 <hr>
 
 <table border="1">
-<? foreach( noop::get( 'list', $data ) as $key=>$value ) { ?>
+<?php foreach( noop::get( 'list', $data ) as $key=>$value ) { ?>
 	<tr>
 		<th><?=$key?></th>
 		<td><?=$value?></td>
 	</tr>
-<? } ?>
+<?php } ?>
 </table>
 
 <hr>
-<?php noop::inspect( '', FALSE, $data ) ?>
+<?=noop::inspect( '', $data )?>
 
 </body>
 </html>

@@ -317,8 +317,7 @@ class noop {
 	public static function inspect( $path='', $arr=NULL ) {
 		if( $arr === NULL )
 			$arr = &self::$var;
-		$out = sprintf( self::$var['config']['dev']['inspect'], print_r( self::get( $path, $arr ), TRUE ) );
-		if( !$return ) echo $out; else return $out;
+		return sprintf( self::$var['config']['dev']['inspect'], print_r( self::get( $path, $arr ), TRUE ) );
 	}
 	
 	// DEV Benchmark ($action : TRUE=>start, FALSE=>stop, NULL=>add HTTP header)
