@@ -314,7 +314,7 @@ class noop {
 	}
 	
 	// DEV Print $var from a path. ex: noop::inspect( 'config/default' )
-	public static function inspect( $path='', $return=FALSE, $arr=NULL ) {
+	public static function inspect( $path='', $arr=NULL ) {
 		if( $arr === NULL )
 			$arr = &self::$var;
 		$out = sprintf( self::$var['config']['dev']['inspect'], print_r( self::get( $path, $arr ), TRUE ) );
