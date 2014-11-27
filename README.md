@@ -2,6 +2,8 @@
 
 NOOP is a *really* tiny PHP framework for small/medium sized PHP project, based on a *really* free [MVC architecture](#mvc). The main idea behind this library is being unopinionated, and therefore staying as close as possible of... PHP. There are no PHP extensions in this library, it's just about organization. You know PHP, you'll use PHP.
 
+**Installation ** : Just copy the folder to your Apache server, and activate `mod_rewrite` module.
+
 Technically, NOOP is a **one file** library ("*noop.php*"), and a **one object** library ("*noop*"). [All methods](#api) in this object are *statics*, and can be classified this way :
 
 Type|Methods

@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title><?=noop::get( 'title', $data )?></title>
+<title><?=noop::get( 'var/title' )?></title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
 </head>
 <body>
 
-<h1><?=noop::get( 'title', $data )?></h1>
-<p><?=noop::get( 'content', $data )?></p>
+<h1><?=noop::get( 'var/title' )?></h1>
+<p><?=noop::get( 'var/content', $data )?></p>
 
 <hr>
 
 <table border="1">
-<?php foreach( noop::get( 'list', $data ) as $key=>$value ) { ?>
+<?php foreach( noop::get( 'var/list' ) as $key=>$value ) { ?>
 	<tr>
 		<th><?=$key?></th>
 		<td><?=$value?></td>
@@ -22,7 +22,12 @@
 </table>
 
 <hr>
-<?=noop::inspect( '', $data )?>
+
+<?=noop::inspect( 'var' )?>
+
+<hr>
+
+<p>Need <a href="help">help</a> ?</p>
 
 </body>
 </html>
