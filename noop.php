@@ -399,6 +399,9 @@ class noop {
 		if( !empty( $_REQUEST['_method'] ) )
 			$method = $_REQUEST['_method'];
 		
+		if( isset( $_SERVER['CONTENT_TYPE'] ) && substr( $_SERVER['CONTENT_TYPE'], 0, 17 ) )
+			self::set( 'request/json', json_decode( file_get_contents('php://input'), TRUE ) );
+		
 		self::set( 'request/url', $url );
 		self::set( 'request/qs', $qs );
 		self::set( 'request/canonical', $canonical );
