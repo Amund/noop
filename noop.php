@@ -262,8 +262,10 @@ class noop {
 		}
 		header( 'Content-Type: '.$mime );
 		// end page benchmark
-		self::benchmark( 'Page', FALSE ); // stop benchmark
-		self::benchmark( 'Page' ); // set header
+		if( isset( self::$var['benchmark']['Page']['start'] ) ) {
+			self::benchmark( 'Page', FALSE ); // stop benchmark
+			self::benchmark( 'Page' ); // set header
+		}
 		// Send final result
 		echo $content;
 		header( 'Content-Length: ' . ob_get_length() );
