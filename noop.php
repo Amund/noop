@@ -43,6 +43,7 @@ class noop {
 			),
 			'path'=> array(
 				'controller'=>'secure/control',
+				'model'=>'secure/model',
 				'view'=>'secure/view',
 				//'cache'=>'secure/cache',
 			),
