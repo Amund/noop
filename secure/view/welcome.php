@@ -24,7 +24,7 @@
 <hr>
 
 <?=noop::inspect( 'var' )?>
-
+<p>See <a href="inspect?with=some&random=parameters">all available data</a> for a request</p>
 <hr>
 
 <p>Need <a href="help">help</a> ?</p>
