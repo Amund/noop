@@ -1,4 +1,4 @@
-<h1>Noop request inspection</h1>
+<h1>Noop request inspection, by example</h1>
 <p>Calling <code>noop::start</code> populate the Noop registry with all the details of the request. It's important to check the current state of your app during its development.</p>
 <p>You can view parts of this registry anywhere in your code, for example with <code>noop::inspect( 'app' )</code><p>
 <?=noop::inspect( 'app' )?>
@@ -11,3 +11,4 @@
 
 <p>Or without any path to simply view all the registry, <code>noop::inspect()</code></p>
 <?=noop::inspect()?>
+<p>See a more <a href="help#registry-system-noop-">detailed overview of the registry</a> in help page.</p>

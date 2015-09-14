@@ -21,7 +21,7 @@ All datas in NOOP are stored in a unique multilevel associative array, its regis
 - `app` App related infos, calculated from the request
 - `request` Details of the request, and controller related vars
 - `controllers` Collection of PHP scripts to include
-- `pdo` Collection of PDO objects already created
+- `pdo` Collection of PDO instances already created
 - `benchmark` Collection of benchmarks
 - `var` Your playground, store anything you want...
 
@@ -61,16 +61,10 @@ There is no direct support for anything related to models in NOOP. PHP objects a
 However, to stay in a NOOP way, you can store your classes in the folder `secure/model`, and declare it with a new configuration variable :
 
     noop::set( 'config/path/model', 'secure/model' );
-	
-Then add your favorite PHP autoload, perhaps in `index.php` (at the root folder of NOOP). For example :
 
-    function __autoload( $c ) {
-		$f = noop::get( 'config/path/model' ).DIRECTORY_SEPARATOR.$c.'.php';
-		if( !is_file( $f ) )
-			throw new Exception( 'Classe "'.$c.'" introuvable' );
-		require_once $f;
-	}
+Then add your favorite PHP autoload, perhaps in `index.php` (at the root folder of NOOP).
 
+Note : Since v2.0.2, the folder `secure/model` and a generic autoload are added. Simply put your classes in this folder, and you're good to go.
 
 ### Controllers [^](#noop)
 
