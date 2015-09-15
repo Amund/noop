@@ -4,7 +4,9 @@
 // setlocale( LC_ALL, array( 'fr_FR.UTF-8', 'fr_FR', 'fr' ) );
 // ini_set( 'date.timezone', 'Europe/Paris' );
 // header_remove( 'X-Powered-By' );
-// spl_autoload_register( 'autoload' );
+
+// Register autoload
+spl_autoload_register( 'autoload' );
 
 // Load library...
 require 'noop.php';
