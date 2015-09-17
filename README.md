@@ -279,7 +279,7 @@ Obviously, there is no best way, it's just a matter of taste. You can choose a w
 
 
 <a name="method-benchmark"></a>
-### noop::benchmark( `$name`[, `$action`] ) [^](#noop)
+### benchmark( `$name`[, `$action`] ) [^](#noop)
 
 Set/Get some benchmarks, to trap too long functions, etc... during the development. A benchmark with name "page" is added internally. All benchmarks are also added as HTTP headers ("`X-Benchmark-Page: 0.123456`").
 
@@ -303,7 +303,7 @@ Set/Get some benchmarks, to trap too long functions, etc... during the developme
 
 
 <a name="method-check"></a>
-### noop::check( `$reg`, `$var` ) [^](#noop)
+### check( `$reg`, `$var` ) [^](#noop)
 
 Check if $var match the regexp $reg.
 
@@ -339,7 +339,7 @@ Less simple version, with arrays
 
 	
 <a name="method-config"></a>
-### noop::config( `$config` ) [^](#noop)
+### config( `$config` ) [^](#noop)
 
 Extend/Override NOOP configuration registry. You can load different parts of a heavy configuration, configure pathes, manage DB connections, add mime types, switch configuration (dev/prod), add your own app specific configuration variables, etc...
 
@@ -378,7 +378,7 @@ Extend/Override NOOP configuration registry. You can load different parts of a h
 
 
 <a name="method-del"></a>
-### noop::del( `$path`[, `$array`] ) [^](#noop)
+### del( `$path`[, `$array`] ) [^](#noop)
 Delete a key in an array, based on a virtual `path` to this key.
 
 ###### Parameters
@@ -411,7 +411,7 @@ Delete a key in an array, based on a virtual `path` to this key.
 
 
 <a name="method-filter"></a>
-### noop::filter( `$src`, `$allowed` ) [^](#noop)
+### filter( `$src`, `$allowed` ) [^](#noop)
 Perform a filter on an array with a whitelist of keys. Other keys are removed.
 
 ###### Parameters
@@ -433,7 +433,7 @@ Perform a filter on an array with a whitelist of keys. Other keys are removed.
 
 
 <a name="method-get"></a>
-### noop::get( `$path`[, `$array`] ) [^](#noop)
+### get( `$path`[, `$array`] ) [^](#noop)
 Get a value from an array, based on a virtual `$path` to its key.
 
 ###### Parameters
@@ -459,7 +459,7 @@ Get a value from an array, based on a virtual `$path` to its key.
 
 
 <a name="method-inspect"></a>
-### noop::inspect( [`$path`[, `$arr`]] ) [^](#noop)
+### inspect( [`$path`[, `$arr`]] ) [^](#noop)
 Development tool to inspect variable in a readable way.
 
 ###### Parameters
@@ -475,7 +475,7 @@ Development tool to inspect variable in a readable way.
 
 
 <a name="method-output"></a>
-### noop::output( [`$content`[, `$type`]] ) [^](#noop)
+### output( [`$content`[, `$type`]] ) [^](#noop)
 Stop the current script, and send the HTTP response to the client.
 
 ###### Parameters
@@ -485,7 +485,7 @@ Stop the current script, and send the HTTP response to the client.
 
 
 <a name="method-pdo"></a>
-### noop::pdo( `$name` ) [^](#noop)
+### pdo( `$name` ) [^](#noop)
 Create a named PDO object, based on its configuration. The object is cached at the first call, for further use.
 
 In the `config` registry, there is a dedicated `pdo` array to store your collection of connection strings. These string are constructed in the form `'[driver],[dsn],[user],[password]'`
@@ -514,7 +514,7 @@ Then use them anywhere
 
 
 <a name="method-redirect"></a>
-### noop::redirect( `$url`[, `$code`] ) [^](#noop)
+### redirect( `$url`[, `$code`] ) [^](#noop)
 Stop the current script, and make an HTTP redirect to `url`.
 
 ###### Parameters
@@ -530,7 +530,7 @@ Stop the current script, and make an HTTP redirect to `url`.
 
 
 <a name="method-set"></a>
-### noop::set( `$path`, `$value`[, `$array`] ) [^](#noop)
+### set( `$path`, `$value`[, `$array`] ) [^](#noop)
 Set a value from an array, based on a virtual `$path` to its key.
 
 ###### Parameters
@@ -560,7 +560,7 @@ Set a value from an array, based on a virtual `$path` to its key.
 
 
 <a name="method-start"></a>
-### noop::start() [^](#noop)
+### start() [^](#noop)
 Launch NOOP app with the current configuration. In the registry, `app`, `request` and `controllers` arrays are populated, and the controllers scripts are included.
 
 All configuration variables must be modified **before** this method.
@@ -570,7 +570,7 @@ After controllers inclusion, there is an implicit call to `noop::output()`.
 
 
 <a name="method-status"></a>
-### noop::status( `$code`, `$status`[, `$content`[, `$type`]] ) [^](#noop)
+### status( `$code`, `$status`[, `$content`[, `$type`]] ) [^](#noop)
 Stop the current script, and return HTTP response to the client.
 
 ###### Parameters
@@ -582,7 +582,7 @@ Stop the current script, and return HTTP response to the client.
 
 
 <a name="method-view"></a>
-### noop::view( `$name`[, `$data`] ) [^](#noop)
+### view( `$name`[, `$data`] ) [^](#noop)
 Compile the `$name` view.
 
 ###### Parameters
