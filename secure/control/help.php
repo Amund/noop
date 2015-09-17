@@ -48,7 +48,7 @@ function toc() {
 	var toc = document.querySelector( '#toc' );
 	toc.innerHTML = '<div>ToC</div>';
 	var h = document.querySelectorAll( 'h2,h3' );
-	console.log( h );
+	//console.log( h );
 	for( var el of h ) {
 		console.log( el );
 		toc.innerHTML += '<a rel="'+el.tagName+'" href="#'+el.id+'">'+el.textContent.slice(0, -2)+'</a>';
