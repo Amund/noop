@@ -1,0 +1,903 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Noop by Amund</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/Amund/Noop">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/Amund/Noop/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/Amund/Noop/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Noop</h1>
+          <p>Tiny PHP MVC framework</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/Amund">Amund</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>
+<a id="noop" class="anchor" href="#noop" aria-hidden="true"><span class="octicon octicon-link"></span></a>NOOP</h1>
+
+<p>NOOP is a <em>really</em> tiny PHP framework for small/medium sized PHP project, based on a <em>really</em> free <a href="#mvc">MVC architecture</a>. The main idea behind this library is being unopinionated, and therefore staying as close as possible of... PHP. There are no PHP extensions in this library, it's just about organization. You know PHP, you'll use PHP.</p>
+
+<p><strong>Installation</strong> : Just copy the folder to your Apache server, and activate <code>mod_rewrite</code> module.</p>
+
+<p>Technically, NOOP is a <strong>one file</strong> library ("<em>noop.php</em>"), and a <strong>one object</strong> library ("<em>noop</em>"). <a href="#api">All methods</a> in this object are <em>statics</em>, and can be classified this way :</p>
+
+<table>
+<thead>
+<tr>
+<th align="right">Type</th>
+<th align="left">Methods</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="right">Core</td>
+<td align="left">
+<a href="#method-config"><code>config</code></a>, <a href="#method-start"><code>start</code></a>, <a href="#method-view"><code>view</code></a> and <a href="#method-pdo"><code>pdo</code></a>
+</td>
+</tr>
+<tr>
+<td align="right">Registry / Arrays</td>
+<td align="left">
+<a href="#method-get"><code>get</code></a>, <a href="#method-set"><code>set</code></a>, <a href="#method-del"><code>del</code></a>
+</td>
+</tr>
+<tr>
+<td align="right">HTTP response</td>
+<td align="left">
+<a href="#method-output"><code>output</code></a>, <a href="#method-redirect"><code>redirect</code></a>, <a href="#method-status"><code>status</code></a>
+</td>
+</tr>
+<tr>
+<td align="right">Helpers</td>
+<td align="left">
+<a href="#method-check"><code>check</code></a>, <a href="#method-filter"><code>filter</code></a>
+</td>
+</tr>
+<tr>
+<td align="right">Dev tools</td>
+<td align="left">
+<a href="#method-inspect"><code>inspect</code></a>, <a href="#method-benchmark"><code>benchmark</code></a>
+</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name="registry"></a></p>
+
+<h2>
+<a id="registry-system-" class="anchor" href="#registry-system-" aria-hidden="true"><span class="octicon octicon-link"></span></a>Registry system <a href="#noop">^</a>
+</h2>
+
+<p>All datas in NOOP are stored in a unique multilevel associative array, its registry system. It's globally accessible without polluting global scope, and organized as follow :</p>
+
+<ul>
+<li>
+<code>config</code> All configuration variables in there</li>
+<li>
+<code>app</code> App related infos, calculated from the request</li>
+<li>
+<code>request</code> Details of the request, and controller related vars</li>
+<li>
+<code>controllers</code> Collection of PHP scripts to include</li>
+<li>
+<code>pdo</code> Collection of PDO instances already created</li>
+<li>
+<code>benchmark</code> Collection of benchmarks</li>
+<li>
+<code>var</code> Your playground, store anything you want...</li>
+</ul>
+
+<p>During the development, you can inspect this registry at any time with the method <a href="#method-inspect"><code>inspect</code></a>.</p>
+
+<pre><code>// Inspect all the registry...
+echo noop::inspect();
+
+// ...or a part...
+echo noop::inspect( 'config' );
+
+// ...or a part of a part...
+echo noop::inspect( 'config/path' );
+</code></pre>
+
+<p>You can also manage all these keys with the <a href="#method-get"><code>get</code></a>, <a href="#method-set"><code>set</code></a> and <a href="#method-del"><code>del</code></a> methods.</p>
+
+<pre><code>// Store a new key...
+noop::set( 'var/foo', 'bar' );
+
+// ...display it...
+echo noop::get( 'var/foo' );
+
+// ...and remove it
+noop::del( 'var/foo' );
+</code></pre>
+
+<p>Because it is a simple associative array, you can do any manipulation you want in the registry. But all the root's keys (except <code>var</code>) are internally managed, so use them with caution.</p>
+
+<p><a name="mvc"></a></p>
+
+<h2>
+<a id="mvc-architecture-" class="anchor" href="#mvc-architecture-" aria-hidden="true"><span class="octicon octicon-link"></span></a>MVC architecture <a href="#noop">^</a>
+</h2>
+
+<h3>
+<a id="models-" class="anchor" href="#models-" aria-hidden="true"><span class="octicon octicon-link"></span></a>Models <a href="#noop">^</a>
+</h3>
+
+<p>There is no direct support for anything related to models in NOOP. PHP objects are powerful enough !</p>
+
+<p>However, to stay in a NOOP way, you can store your classes in the folder <code>secure/model</code>, and declare it with a new configuration variable :</p>
+
+<pre><code>noop::set( 'config/path/model', 'secure/model' );
+</code></pre>
+
+<p>Then add your favorite PHP autoload, perhaps in <code>index.php</code> (at the root folder of NOOP).</p>
+
+<p>Note : Since v2.0.2, the folder <code>secure/model</code> and a generic autoload are added. Simply put your classes in this folder, and you're good to go.</p>
+
+<h3>
+<a id="controllers-" class="anchor" href="#controllers-" aria-hidden="true"><span class="octicon octicon-link"></span></a>Controllers <a href="#noop">^</a>
+</h3>
+
+<p>A controller in NOOP is a PHP script file, located in the controller folder.</p>
+
+<p>This folder is located in <code>secure/control</code> by default, and can be modified in the configuration registry :</p>
+
+<pre><code>noop::set( 'config/path/controller', 'my/new/path' );
+</code></pre>
+
+<p>The default controller is <code>secure/control/index.php</code>, and you can also change this path in the configuration registry :</p>
+
+<pre><code>noop::set( 'config/default/controller', 'homepage' );
+</code></pre>
+
+<p>Of course, you can override multiple default configurations with :</p>
+
+<pre><code>noop::config( array(
+    'default'=&gt; array( 'controller'=&gt; 'homepage' ),
+    'path'=&gt; array( 'controller'=&gt; 'my/new/path' )
+) );
+</code></pre>
+
+<p>Here's the fun part.</p>
+
+<p>The controller is called by an URL, as many other MVC framework. But no routing table around, at least not as usual : the filesystem is the routing table.</p>
+
+<p>Consider this controllers folder :</p>
+
+<pre><code>/[noop-dir]
+    /secure
+        /control
+            /product
+                acme.php
+            index.php
+            product.php
+</code></pre>
+
+<p>Then, add this code in <code>index.php</code> and <code>product.php</code>.</p>
+
+<pre><code>&lt;?php
+echo noop::inspect( 'request' ); /// details on how the URL is parsed
+echo noop::inspect( 'controllers' ); /// What files will be included
+</code></pre>
+
+<p>Finally, take a breath, and try some URL :</p>
+
+<ul>
+<li>
+<code>http://[noop-dir]/</code><br>
+There is no controller, this will use the default controller, <code>index</code>. So, only the file <code>index.php</code> will be included.</li>
+<li>
+<code>http://[noop-dir]/contact</code><br>
+There is no <code>contact.php</code> in the controller folder, you'll face a 404 error.</li>
+<li>
+<code>http://[noop-dir]/product</code><br>
+There is a <code>product.php</code> file, it will be included.</li>
+<li>
+<code>http://[noop-dir]/product/anvil</code><br>
+<code>product.php</code> is always a file, it will be included. <code>product/anvil.php</code> is not, so <code>anvil</code> is not a real controller, it will be considered as a trail (a parameter) for the controller <code>product</code>.</li>
+<li>
+<code>http://[noop-dir]/product/acme</code><br>
+<code>product.php</code> is included, and <code>acme.php</code> too.</li>
+<li>
+<code>http://[noop-dir]/product/acme/anvil</code><br>
+<code>product.php</code> and <code>acme.php</code> are included, and anvil become a trail.</li>
+<li>
+<p><code>http://[noop-dir]/product/acme/anvil/black/iron</code><br>
+Same as above, but with a long trail. To use this list of parameters in your controller, just <a href="http://php.net/explode"><code>explode</code></a> it.</p>
+
+<p>$trails = explode( '/', noop::get( 'request/trail' ) );
+// Array (
+//     [0] =&gt; anvil
+//     [1] =&gt; black
+//     [2] =&gt; iron
+// )</p>
+</li>
+</ul>
+
+<p>If you've got this, you've done the hardest part of NOOP.</p>
+
+<h3>
+<a id="views-" class="anchor" href="#views-" aria-hidden="true"><span class="octicon octicon-link"></span></a>Views <a href="#noop">^</a>
+</h3>
+
+<p>There are 2 ways to use NOOP controllers/views. The first is a more traditional PHP way, more readable for NOOP beginners, but more verbose. The second is the pure NOOP way, for real power user.</p>
+
+<p>Let's start gently.</p>
+
+<h4>
+<a id="the-rusty-php-way" class="anchor" href="#the-rusty-php-way" aria-hidden="true"><span class="octicon octicon-link"></span></a>The rusty PHP way</h4>
+
+<p>We want a page to display a product detail, say... hmm... an anvil. From acme. The URL will be</p>
+
+<p><code>http://[noop-dir]/product?id=123</code></p>
+
+<p>Consider the following controller <code>secure/controller/product.php</code>. I let you implement the class <code>Product</code>, in the file <code>secure/model/Product.php</code> <a href="#models-">for example</a>.</p>
+
+<pre><code>&lt;?php
+
+// We get the product id from the request
+$id = $_GET['id'];
+
+// Create a product instance
+$product = new Product();
+
+// Load the product with id 123 from database
+$product-&gt;load( $id );
+
+// Get all product properties as array( 'id'=&gt;123, 'name'=&gt;'Anvil', 'matter'=&gt;'Iron', 'color'=&gt;'Black' )
+$product_data = $product-&gt;data();
+
+// We load the "product" view,
+// inject product data in it,
+// and store the returned string
+$product_view = noop::view( 'product', $product_data );
+
+// Prepare the final page
+$data = array();
+$data['title'] = 'Product details';
+$data['content'] = $product_view;
+
+// We get the "page" view,
+// inject $data in it (with the product view),
+// and echo it, this time
+echo noop::view( 'page', $data );
+
+// Then return output to browser.
+noop::output( NULL, 'html' );
+</code></pre>
+
+<p>You'll need a product view <code>secure/view/product.php</code>, using the $data variable transmitted:</p>
+
+<pre><code>&lt;div class="product"&gt;
+    &lt;label&gt;ID&lt;/label&gt; &lt;?=$data['id']?&gt;&lt;br&gt;
+    &lt;label&gt;Name&lt;/label&gt; &lt;?=$data['name']?&gt;&lt;br&gt;
+    &lt;label&gt;Matter&lt;/label&gt; &lt;?=$data['matter']?&gt;&lt;br&gt;
+    &lt;label&gt;Color&lt;/label&gt; &lt;?=$data['color']?&gt;&lt;br&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>To avoid warnings on non-existent keys in $data, we can also use <code>noop::get</code> on <code>$data</code>, as a filter:</p>
+
+<pre><code>&lt;div class="product"&gt;
+    &lt;label&gt;ID&lt;/label&gt; &lt;?=noop::get( 'id', $data )?&gt;&lt;br&gt;
+    &lt;label&gt;Name&lt;/label&gt; &lt;?=noop::get( 'name', $data )?&gt;&lt;br&gt;
+    &lt;label&gt;Matter&lt;/label&gt; &lt;?=noop::get( 'matter', $data )?&gt;&lt;br&gt;
+    &lt;label&gt;Color&lt;/label&gt; &lt;?=noop::get( 'color', $data )?&gt;&lt;br&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>And we also need a reusable standard page view <code>secure/view/page.php</code>:</p>
+
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;&lt;?=noop::get( 'title', $data )?&gt;&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;h1&gt;&lt;?=noop::get( 'title', $data )?&gt;&lt;/h1&gt;
+
+    &lt;?=noop::get( 'content', $data )?&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<h4>
+<a id="the-shiny-noop-way" class="anchor" href="#the-shiny-noop-way" aria-hidden="true"><span class="octicon octicon-link"></span></a>The shiny NOOP way</h4>
+
+<p>NOOP has a killer feature : its registry ! You know, this fabulous... simple associative array.</p>
+
+<p>In this array, there is a special place you are encouraged to store in, it's <code>var</code>. It was previously presented as your playground, so let's use it, and save some code. Don't hesitate to add some <code>noop::inspect( 'var' )</code> to see its content.</p>
+
+<p>And as we rewrite, we will also use the controller trail instead of querystring. URL will become <code>http://[noop-dir]/product/123</code></p>
+
+<pre><code>&lt;?php
+
+// Load product
+$id = noop::get( 'request/trail' );
+$product = new Product();
+$product-&gt;load( $id );
+
+// Store all product properties as an associative array in the NOOP registry
+noop::set( 'var/product', $product-&gt;data() );
+
+// Store the compiled product view in the NOOP registry
+noop::set( 'var/product/view', noop::view( 'product' ) );
+
+// Set the page title
+noop::set( 'var/title', 'Product details' );
+
+// Then echo page
+echo noop::view( 'page' );
+</code></pre>
+
+<p>We modify the product view, to get data directly from the registry:</p>
+
+<pre><code>&lt;div class="product"&gt;
+    &lt;label&gt;ID&lt;/label&gt; &lt;?=noop::get( 'var/product/id' )?&gt;&lt;br&gt;
+    &lt;label&gt;Type&lt;/label&gt; &lt;?=noop::get( 'var/product/type' )?&gt;&lt;br&gt;
+    &lt;label&gt;Name&lt;/label&gt; &lt;?=noop::get( 'var/product/name' )?&gt;&lt;br&gt;
+    &lt;label&gt;Matter&lt;/label&gt; &lt;?=noop::get( 'var/product/matter' )?&gt;&lt;br&gt;
+    &lt;label&gt;Color&lt;/label&gt; &lt;?=noop::get( 'var/product/color' )?&gt;&lt;br&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>And the page view too:</p>
+
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;&lt;?=noop::get( 'var/title' )?&gt;&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;h1&gt;&lt;?=noop::get( 'var/title' )?&gt;&lt;/h1&gt;
+
+    &lt;?=noop::get( 'var/page/content' )?&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<h4>
+<a id="choose-your-path" class="anchor" href="#choose-your-path" aria-hidden="true"><span class="octicon octicon-link"></span></a>Choose your path</h4>
+
+<p>Obviously, there is no best way, it's just a matter of taste. You can choose a way, or mix them, or whatever. That's what I call unopinionated.</p>
+
+<p><a name="api"></a></p>
+
+<h2>
+<a id="api-" class="anchor" href="#api-" aria-hidden="true"><span class="octicon octicon-link"></span></a>API <a href="#noop">^</a>
+</h2>
+
+<p><a name="method-benchmark"></a></p>
+
+<h3>
+<a id="benchmark-name-action--" class="anchor" href="#benchmark-name-action--" aria-hidden="true"><span class="octicon octicon-link"></span></a>benchmark( <code>$name</code>[, <code>$action</code>] ) <a href="#noop">^</a>
+</h3>
+
+<p>Set/Get some benchmarks, to trap too long functions, etc... during the development. A benchmark with name "page" is added internally. All benchmarks are also added as HTTP headers ("<code>X-Benchmark-Page: 0.123456</code>").</p>
+
+<h6>
+<a id="parameters" class="anchor" href="#parameters" aria-hidden="true"><span class="octicon octicon-link"></span></a>Parameters</h6>
+
+<ul>
+<li>
+<code>$name</code> Required, String. Name of the benchmark.</li>
+<li>
+<code>$action</code> Optional, Boolean or NULL, default to NULL. TRUE start the benchmark, FALSE stop it, and NULL (or no value) return the timer.</li>
+</ul>
+
+<h6>
+<a id="return" class="anchor" href="#return" aria-hidden="true"><span class="octicon octicon-link"></span></a>Return</h6>
+
+<ul>
+<li>If <code>$action</code> is NULL, return the benchmark value, in seconds.</li>
+</ul>
+
+<h6>
+<a id="example" class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h6>
+
+<pre><code>noop::benchmark( 'mylongloop', TRUE ); // start
+//...some code to evaluate...
+noop::benchmark( 'mylongloop', FALSE ); // stop
+
+// ...then print
+echo noop::benchmark( 'mylongloop' ); // '0.123456', in seconds
+
+// Additionally, you'll find a "X-Benchmark-mylongloop: 0.123456" in HTTP response headers
+</code></pre>
+
+<p><a name="method-check"></a></p>
+
+<h3>
+<a id="check-reg-var--" class="anchor" href="#check-reg-var--" aria-hidden="true"><span class="octicon octicon-link"></span></a>check( <code>$reg</code>, <code>$var</code> ) <a href="#noop">^</a>
+</h3>
+
+<p>Check if $var match the regexp $reg.</p>
+
+<h6>
+<a id="parameters-1" class="anchor" href="#parameters-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Parameters</h6>
+
+<ul>
+<li>
+<code>$reg</code> Required, String or Array</li>
+<li>
+<code>$var</code> Required, String or Array</li>
+</ul>
+
+<h6>
+<a id="return-1" class="anchor" href="#return-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Return</h6>
+
+<ul>
+<li>Boolean, if <code>$reg</code> and <code>$var</code> are strings</li>
+<li>Array of errors, if <code>$reg</code> and <code>$var</code> are arrays</li>
+</ul>
+
+<h6>
+<a id="example-1" class="anchor" href="#example-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h6>
+
+<p>Simple version, with strings</p>
+
+<pre><code>$test = noop::check( '#\d+#', '123' );
+var_dump( $test ); // =&gt; TRUE
+
+$test = noop::check( '#\d+#', 'my test' );
+var_dump( $test ); // =&gt; FALSE
+</code></pre>
+
+<p>Less simple version, with arrays</p>
+
+<pre><code>$reg = array( 'a'=&gt;'#\d+#', 'b'=&gt;'#\w{1,}#' );
+$var = array( 'a'=&gt;'123', 'b'=&gt;'is checked', 'c'=&gt;'is not checked' )
+$errors = noop::check( $reg, $var );
+var_dump( $test ); // =&gt; array()
+
+$reg = array( 'a'=&gt;'#\d+#', 'b'=&gt;'#\w{1,}#' );
+$var = array( 'a'=&gt;'wrong', 'b'=&gt;'right', 'c'=&gt;'is not checked' )
+$errors = noop::check( $reg, $var );
+var_dump( $test ); // =&gt; array( 'a'=&gt;FALSE )
+</code></pre>
+
+<p><a name="method-config"></a></p>
+
+<h3>
+<a id="config-config--" class="anchor" href="#config-config--" aria-hidden="true"><span class="octicon octicon-link"></span></a>config( <code>$config</code> ) <a href="#noop">^</a>
+</h3>
+
+<p>Extend/Override NOOP configuration registry. You can load different parts of a heavy configuration, configure pathes, manage DB connections, add mime types, switch configuration (dev/prod), add your own app specific configuration variables, etc...</p>
+
+<h6>
+<a id="parameters-2" class="anchor" href="#parameters-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Parameters</h6>
+
+<ul>
+<li>
+<code>$config</code> Required, Array</li>
+</ul>
+
+<h6>
+<a id="example-2" class="anchor" href="#example-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h6>
+
+<pre><code>var_dump( noop::get( 'config' ) );
+
+// Array (
+//     [default] =&gt; Array (
+//         [controller] =&gt; index
+//         [lang] =&gt; en
+//         [mime] =&gt; html
+//     )
+// ...
+
+$config = array(
+    'default'=&gt;array(
+        'controller'=&gt;'default',
+        'lang'=&gt;'fr'
+    )
+);
+noop::config( $config );
+
+var_dump( noop::get( 'config' ) );
+
+// Array (
+//     [default] =&gt; Array (
+//         [controller] =&gt; default
+//         [lang] =&gt; fr
+//         [mime] =&gt; html
+//     )
+// ...
+</code></pre>
+
+<p><a name="method-del"></a></p>
+
+<h3>
+<a id="del-path-array--" class="anchor" href="#del-path-array--" aria-hidden="true"><span class="octicon octicon-link"></span></a>del( <code>$path</code>[, <code>$array</code>] ) <a href="#noop">^</a>
+</h3>
+
+<p>Delete a key in an array, based on a virtual <code>path</code> to this key.</p>
+
+<h6>
+<a id="parameters-3" class="anchor" href="#parameters-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>Parameters</h6>
+
+<ul>
+<li>
+<code>$path</code> Required, String.</li>
+<li>
+<code>$array</code> Optional, Array. If omitted, the NOOP registry is used.</li>
+</ul>
+
+<h6>
+<a id="return-2" class="anchor" href="#return-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Return</h6>
+
+<ul>
+<li>FALSE if <code>$path</code> was empty</li>
+<li>NULL if the key was not found in array</li>
+<li>Otherwise, the deleted value is returned</li>
+</ul>
+
+<h6>
+<a id="example-3" class="anchor" href="#example-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h6>
+
+<pre><code>$myarr = array(
+    'path'=&gt;array(
+        'to'=&gt;array(
+            'key'=&gt;'value'
+        )
+    )
+);
+
+noop::del( 'path/to/key', $myarr );
+
+// Array (
+//     [path] =&gt; Array (
+//         [to] =&gt; Array
+//             (
+//             )
+//     )
+// )
+</code></pre>
+
+<p><a name="method-filter"></a></p>
+
+<h3>
+<a id="filter-src-allowed--" class="anchor" href="#filter-src-allowed--" aria-hidden="true"><span class="octicon octicon-link"></span></a>filter( <code>$src</code>, <code>$allowed</code> ) <a href="#noop">^</a>
+</h3>
+
+<p>Perform a filter on an array with a whitelist of keys. Other keys are removed.</p>
+
+<h6>
+<a id="parameters-4" class="anchor" href="#parameters-4" aria-hidden="true"><span class="octicon octicon-link"></span></a>Parameters</h6>
+
+<ul>
+<li>
+<code>$src</code> Required, Array. The source array</li>
+<li>
+<code>$allowed</code> Required, Array. The whitelist of keys</li>
+</ul>
+
+<h6>
+<a id="return-3" class="anchor" href="#return-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>Return</h6>
+
+<ul>
+<li>A new array, with only withelisted keys</li>
+</ul>
+
+<h6>
+<a id="example-4" class="anchor" href="#example-4" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h6>
+
+<pre><code>// http://test/?q=42&amp;lang=fr&amp;out=txt&amp;referer=
+$request = noop::filter( $_GET, array( 'q', 'lang' ) );
+
+// Array (
+//     [q] =&gt; 42
+//     [lang] =&gt; fr
+// )
+</code></pre>
+
+<p><a name="method-get"></a></p>
+
+<h3>
+<a id="get-path-array--" class="anchor" href="#get-path-array--" aria-hidden="true"><span class="octicon octicon-link"></span></a>get( <code>$path</code>[, <code>$array</code>] ) <a href="#noop">^</a>
+</h3>
+
+<p>Get a value from an array, based on a virtual <code>$path</code> to its key.</p>
+
+<h6>
+<a id="parameters-5" class="anchor" href="#parameters-5" aria-hidden="true"><span class="octicon octicon-link"></span></a>Parameters</h6>
+
+<ul>
+<li>
+<code>$path</code> Required, String.</li>
+<li>
+<code>$array</code> Optional, Array. If omitted, the NOOP registry is used.</li>
+</ul>
+
+<h6>
+<a id="return-4" class="anchor" href="#return-4" aria-hidden="true"><span class="octicon octicon-link"></span></a>Return</h6>
+
+<ul>
+<li>
+<code>$array</code>, if the path is empty (<code>''</code>) or root (<code>'/'</code>)</li>
+<li>The key value, if the <code>$path</code> is found</li>
+<li>Otherwise, <code>NULL</code>
+</li>
+</ul>
+
+<h6>
+<a id="example-5" class="anchor" href="#example-5" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h6>
+
+<pre><code>$myarr = array(
+    'path'=&gt;array(
+        'to'=&gt;array(
+            'key'=&gt;'value'
+        )
+    )
+);
+
+echo noop::get( 'path/to/key', $myarr ); // =&gt; 'value'
+</code></pre>
+
+<p><a name="method-inspect"></a></p>
+
+<h3>
+<a id="inspect-path-arr--" class="anchor" href="#inspect-path-arr--" aria-hidden="true"><span class="octicon octicon-link"></span></a>inspect( [<code>$path</code>[, <code>$arr</code>]] ) <a href="#noop">^</a>
+</h3>
+
+<p>Development tool to inspect variable in a readable way.</p>
+
+<h6>
+<a id="parameters-6" class="anchor" href="#parameters-6" aria-hidden="true"><span class="octicon octicon-link"></span></a>Parameters</h6>
+
+<ul>
+<li>
+<code>$path</code> Optional, String. The "virtual" path to the key. Default to <code>''</code>
+</li>
+<li>
+<code>$arr</code> Optional, Array. If omitted, the NOOP registry is used.</li>
+</ul>
+
+<h6>
+<a id="return-5" class="anchor" href="#return-5" aria-hidden="true"><span class="octicon octicon-link"></span></a>Return</h6>
+
+<ul>
+<li>Print formatted string representation of the variable if <code>$return</code> is TRUE</li>
+</ul>
+
+<h6>
+<a id="example-6" class="anchor" href="#example-6" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h6>
+
+<pre><code>// To have a look on current request
+echo noop::inspect( 'request' );
+</code></pre>
+
+<p><a name="method-output"></a></p>
+
+<h3>
+<a id="output-content-type--" class="anchor" href="#output-content-type--" aria-hidden="true"><span class="octicon octicon-link"></span></a>output( [<code>$content</code>[, <code>$type</code>]] ) <a href="#noop">^</a>
+</h3>
+
+<p>Stop the current script, and send the HTTP response to the client.</p>
+
+<h6>
+<a id="parameters-7" class="anchor" href="#parameters-7" aria-hidden="true"><span class="octicon octicon-link"></span></a>Parameters</h6>
+
+<ul>
+<li>
+<code>$content</code> Optional, String. The response body to send</li>
+<li>
+<code>$type</code> Optional, String. A valid MIME type, or a shortcut (<code>'text'</code>, <code>'html'</code> or <code>'json'</code>)</li>
+</ul>
+
+<p><a name="method-pdo"></a></p>
+
+<h3>
+<a id="pdo-name--" class="anchor" href="#pdo-name--" aria-hidden="true"><span class="octicon octicon-link"></span></a>pdo( <code>$name</code> ) <a href="#noop">^</a>
+</h3>
+
+<p>Create a named PDO object, based on its configuration. The object is cached at the first call, for further use.</p>
+
+<p>In the <code>config</code> registry, there is a dedicated <code>pdo</code> array to store your collection of connection strings. These string are constructed in the form <code>'[driver],[dsn],[user],[password]'</code></p>
+
+<p>Example: <code>'mysql,host=localhost;dbname=db,admin,fZ5GdsV4'</code></p>
+
+<h6>
+<a id="parameters-8" class="anchor" href="#parameters-8" aria-hidden="true"><span class="octicon octicon-link"></span></a>Parameters</h6>
+
+<ul>
+<li>
+<code>$name</code> Required, String</li>
+</ul>
+
+<h6>
+<a id="return-6" class="anchor" href="#return-6" aria-hidden="true"><span class="octicon octicon-link"></span></a>Return</h6>
+
+<ul>
+<li><a href="http://php.net/pdo">PDO instance</a></li>
+</ul>
+
+<h6>
+<a id="example-7" class="anchor" href="#example-7" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h6>
+
+<p>Setup databases connections</p>
+
+<pre><code>noop::config( array(
+    'pdo'=&gt;array(
+        'db1'=&gt;'mysql,host=localhost;dbname=db1,user1,password1',
+        'db2'=&gt;'mysql,host=localhost;dbname=db2,user2,password2',
+    )
+) );
+</code></pre>
+
+<p>Then use them anywhere</p>
+
+<pre><code>$stmt = noop::pdo( 'db1' )-&gt;query( 'SELECT * FROM table' );
+</code></pre>
+
+<p><a name="method-redirect"></a></p>
+
+<h3>
+<a id="redirect-url-code--" class="anchor" href="#redirect-url-code--" aria-hidden="true"><span class="octicon octicon-link"></span></a>redirect( <code>$url</code>[, <code>$code</code>] ) <a href="#noop">^</a>
+</h3>
+
+<p>Stop the current script, and make an HTTP redirect to <code>url</code>.</p>
+
+<h6>
+<a id="parameters-9" class="anchor" href="#parameters-9" aria-hidden="true"><span class="octicon octicon-link"></span></a>Parameters</h6>
+
+<ul>
+<li>
+<code>$url</code> Required, String. The URL to redirect to</li>
+<li>
+<code>$code</code> Optional, Integer. The HTTP redirect code. Default to <code>'302'</code>
+</li>
+</ul>
+
+<h6>
+<a id="example-8" class="anchor" href="#example-8" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h6>
+
+<pre><code>// An external URL
+noop::redirect( 'http://www.google.com/' );
+
+// or a relative URL
+noop::redirect( noop::get( 'app-url' ).'/contact' );
+</code></pre>
+
+<p><a name="method-set"></a></p>
+
+<h3>
+<a id="set-path-value-array--" class="anchor" href="#set-path-value-array--" aria-hidden="true"><span class="octicon octicon-link"></span></a>set( <code>$path</code>, <code>$value</code>[, <code>$array</code>] ) <a href="#noop">^</a>
+</h3>
+
+<p>Set a value from an array, based on a virtual <code>$path</code> to its key.</p>
+
+<h6>
+<a id="parameters-10" class="anchor" href="#parameters-10" aria-hidden="true"><span class="octicon octicon-link"></span></a>Parameters</h6>
+
+<ul>
+<li>
+<code>$path</code> Required, String.</li>
+<li>
+<code>$value</code> Required, Mixed.</li>
+<li>
+<code>$array</code> Optional, Array. If omitted, the NOOP registry is used.</li>
+</ul>
+
+<h6>
+<a id="return-7" class="anchor" href="#return-7" aria-hidden="true"><span class="octicon octicon-link"></span></a>Return</h6>
+
+<ul>
+<li><code>TRUE</code></li>
+</ul>
+
+<h6>
+<a id="example-9" class="anchor" href="#example-9" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h6>
+
+<pre><code>$arr = array();
+noop::set( 'first', 'foo', $arr );
+noop::set( 'second/key', array( 1, 2, 3 ), $arr );
+
+// Array (
+//     [first] =&gt; foo
+//     [second] =&gt; Array (
+//         [key] =&gt; Array (
+//             [0] =&gt; 1
+//             [1] =&gt; 2
+//             [2] =&gt; 3
+//         )
+//     )
+// )
+</code></pre>
+
+<p><a name="method-start"></a></p>
+
+<h3>
+<a id="start-" class="anchor" href="#start-" aria-hidden="true"><span class="octicon octicon-link"></span></a>start() <a href="#noop">^</a>
+</h3>
+
+<p>Launch NOOP app with the current configuration. In the registry, <code>app</code>, <code>request</code> and <code>controllers</code> arrays are populated, and the controllers scripts are included.</p>
+
+<p>All configuration variables must be modified <strong>before</strong> this method.</p>
+
+<p>After controllers inclusion, there is an implicit call to <code>noop::output()</code>.</p>
+
+<p><a name="method-status"></a></p>
+
+<h3>
+<a id="status-code-status-content-type--" class="anchor" href="#status-code-status-content-type--" aria-hidden="true"><span class="octicon octicon-link"></span></a>status( <code>$code</code>, <code>$status</code>[, <code>$content</code>[, <code>$type</code>]] ) <a href="#noop">^</a>
+</h3>
+
+<p>Stop the current script, and return HTTP response to the client.</p>
+
+<h6>
+<a id="parameters-11" class="anchor" href="#parameters-11" aria-hidden="true"><span class="octicon octicon-link"></span></a>Parameters</h6>
+
+<ul>
+<li>
+<code>$code</code> Required, Integer. HTTP response code</li>
+<li>
+<code>$status</code> Required , String. HTTP response status</li>
+<li>
+<code>$content</code> Optional, String. Body of the response. Default <code>''</code>
+</li>
+<li>
+<code>$type</code> Optional, String. A MIME type, or a shortcut. Default <code>'html'</code>
+</li>
+</ul>
+
+<p><a name="method-view"></a></p>
+
+<h3>
+<a id="view-name-data--" class="anchor" href="#view-name-data--" aria-hidden="true"><span class="octicon octicon-link"></span></a>view( <code>$name</code>[, <code>$data</code>] ) <a href="#noop">^</a>
+</h3>
+
+<p>Compile the <code>$name</code> view.</p>
+
+<h6>
+<a id="parameters-12" class="anchor" href="#parameters-12" aria-hidden="true"><span class="octicon octicon-link"></span></a>Parameters</h6>
+
+<ul>
+<li>
+<code>$name</code> Required, String. The relative path to the view file, minus ".php"</li>
+<li>
+<code>$data</code> Optional, Array. An additional data array to transmit to the view.</li>
+</ul>
+
+<h6>
+<a id="return-8" class="anchor" href="#return-8" aria-hidden="true"><span class="octicon octicon-link"></span></a>Return</h6>
+
+<ul>
+<li>String. The compiled view (where variables are replaced with values)</li>
+</ul>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
