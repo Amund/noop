@@ -59,7 +59,8 @@ class noop {
 			'pdo'=>array(),
 			'dev'=>array(
 				'debug'=>TRUE,
-				'inspect'=>'<pre style="font:12px/13px Consolas,\'Lucida Console\',monospace;text-align:left;color:#ddd;background-color:#222;padding:5px;">%s</pre>'
+				'inspect'=>'<pre style="font:12px/13px Consolas,\'Lucida Console\',monospace;text-align:left;color:#ddd;background-color:#222;padding:5px;">%s</pre>',
+				'callback'=>array( 'noop', '_exception' ),
 			),
 		),
 		'app'=>array(), // Noop app infos
@@ -88,7 +89,7 @@ class noop {
 		
 		// Attach error handlers
 		set_error_handler( array( 'noop', '_error_handler' ) );
-		set_exception_handler( array( 'noop', '_exception' ) );
+		set_exception_handler( self::get( 'config/dev/callback' ) );
 		ini_set( 'display_errors', ( self::get( 'config/dev/debug' ) ? 1 : 0 ) );
 		
 		// Start buffering
