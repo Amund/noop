@@ -272,7 +272,6 @@ class noop {
 		}
 		// Send final result
 		echo $content;
-		header( 'Content-Length: ' . ob_get_length() );
 		die();
 	}
 	
