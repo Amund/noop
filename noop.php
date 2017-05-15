@@ -468,9 +468,10 @@ class noop {
 		}
 		
 		self::set( 'request/controller', $controller );
-
-		self::set( 'request/controller-url', self::$var['app']['url'].$controller );
 		self::set( 'request/trail', trim( $trail, '/' ) );
+
+		if( isset( self::$var['app']['url'] ) )
+			self::set( 'request/controller-url', self::$var['app']['url'].$controller );
 		
 		if( count( self::$var['controllers'] ) == 0 )
 			throw new NoopControllerException( 'Controller "'.self::$var['request']['controller'].'" not found', 404 );
