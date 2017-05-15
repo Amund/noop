@@ -1,5 +1,6 @@
 <?php
 
+// 2017 - NOOP 3.0.0
 // 2016 - NOOP 2.0.3
 // 2015 - NOOP 2.0.2
 // 2014 - NOOP 2.0.1
@@ -42,12 +43,15 @@ class noop {
 				'controller'=>'index',
 				'lang'=>'en',
 				'mime'=>'html',
+				'autoload'=>array( 'self', 'psr4_autoload' ),
+				'error_handler'=>array( 'self', '_error_handler' ),
+				'exception_handler'=>array( 'self', '_exception' ),
 			),
 			'path'=> array(
-				'controller'=>'secure/control',
-				'model'=>'secure/model',
-				'view'=>'secure/view',
-				//'cache'=>'secure/cache',
+				'controller'=>'../control',
+				'model'=>'../model',
+				'view'=>'../view',
+				'cache'=>'../cache',
 			),
 			'mime'=>array(
 				'text'=>'text/plain; charset=UTF-8',
@@ -61,7 +65,6 @@ class noop {
 			'dev'=>array(
 				'debug'=>TRUE,
 				'inspect'=>'<pre style="font:12px/13px Consolas,\'Lucida Console\',monospace;text-align:left;color:#ddd;background-color:#222;padding:5px;">%s</pre>',
-				'callback'=>array( 'noop', '_exception' ),
 			),
 		),
 		'app'=>array(), // Noop app infos
@@ -71,11 +74,8 @@ class noop {
 		'var'=>array(), // other user vars...
 	);
 	
-	// Merge/replace config array with $var['config']
-	public static function config( $config ) {
-		if( !is_array( $config ) )
-			throw new NoopConfigException( 'Invalid configuration data' );
-		
+	// Merge/replace registry config array with $config
+	public static function config( array $config ) {
 		//self::$var['config'] = array_merge( self::$var['config'], $config );
 		self::$var['config'] = self::_array_extend( self::$var['config'], $config );
 		
@@ -87,10 +87,15 @@ class noop {
 	
 	// Launch Noop app
 	public static function start() {
+
+		// Register autoload
+		spl_autoload_register( self::get( 'config/default/autoload' ) );
 		
 		// Attach error handlers
-		set_error_handler( array( 'noop', '_error_handler' ) );
-		set_exception_handler( self::get( 'config/dev/callback' ) );
+		set_error_handler( self::get( 'config/default/error_handler' ) );
+		set_exception_handler( self::get( 'config/default/exception_handler' ) );
+
+		// Debug
 		ini_set( 'display_errors', ( self::get( 'config/dev/debug' ) ? 1 : 0 ) );
 		
 		// Start buffering
@@ -157,7 +162,7 @@ class noop {
 	
 	// Return new PDO connection or use existing one
 	public static function pdo( $name, $pdo_options=NULL ) {
-		// existing pdo object
+		// existing cached pdo object
 		if( isset( self::$var['pdo'][$name] ) )
 			return self::$var['pdo'][$name];
 		// new pdo object
@@ -461,6 +466,15 @@ class noop {
 		
 		if( count( self::$var['controllers'] ) == 0 )
 			throw new NoopControllerException( 'Controller "'.self::$var['request']['controller'].'" not found', 404 );
+	}
+
+	// PSR4 Autoload
+	public static function psr4_autoload( $class ) {
+		$base_dir = self::get( 'config/path/model' ).'/';
+		$file = $base_dir.str_replace( '\\', '/', $class ).'.php';
+		if( !is_file( $file ) || !is_readable( $file ) )
+			throw new NoopException( 'Class '.$class.' Not Found', 404 );
+		require $file;
 	}
 	
 	// Error handling
