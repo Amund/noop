@@ -48,10 +48,10 @@ class noop {
 				'exception_handler'=>array( 'self', '_exception' ),
 			),
 			'path'=> array(
-				'controller'=>'../control',
-				'model'=>'../model',
-				'view'=>'../view',
-				'cache'=>'../cache',
+				'controller'=>'app/control',
+				'model'=>'app/model',
+				'view'=>'app/view',
+				'cache'=>'data/cache',
 			),
 			'mime'=>array(
 				'text'=>'text/plain; charset=UTF-8',
