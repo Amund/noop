@@ -22,9 +22,9 @@
         <testsuite name="Noop tests">
         	<directory suffix="Test.php">Noop</directory>
         </testsuite>
-        <!--<testsuite name="App tests">
+        <testsuite name="App tests">
         	<directory suffix="Test.php">App</directory>
-        </testsuite>-->
+        </testsuite>
     </testsuites>
 
 </phpunit>
