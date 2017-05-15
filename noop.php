@@ -405,9 +405,15 @@ class noop {
 		
 		$ajax = ( isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && strtolower( $_SERVER['HTTP_X_REQUESTED_WITH'] ) == 'xmlhttprequest' );
 		
-		$method = $_SERVER['REQUEST_METHOD'];
-		if( !empty( $_REQUEST['_method'] ) )
-			$method = $_REQUEST['_method'];
+		$method = (
+			!empty( $_SERVER['REQUEST_METHOD'] )
+			? $_SERVER['REQUEST_METHOD']
+			: (
+				!empty( $_REQUEST['_method'] )
+				? $_REQUEST['_method']
+				: ''
+			)
+		);
 		
 		if( isset( $_SERVER['CONTENT_TYPE'] ) && substr( $_SERVER['CONTENT_TYPE'], 0, 16 ) == 'application/json' )
 			self::set( 'request/json', json_decode( file_get_contents('php://input'), TRUE ) );
@@ -415,9 +421,11 @@ class noop {
 		self::set( 'request/url', $url );
 		self::set( 'request/qs', $qs );
 		self::set( 'request/canonical', $canonical );
-		self::set( 'request/canonical-url', self::$var['app']['url'].$canonical );
 		self::set( 'request/ajax', $ajax );
 		self::set( 'request/method', $method );
+
+		if( isset( self::$var['app']['url'] ) )
+			self::set( 'request/canonical-url', self::$var['app']['url'].$canonical );
 	}
 	
 	// Parse "controller" (request url) and prepare includes list
