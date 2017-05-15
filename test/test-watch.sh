@@ -1,7 +1,7 @@
 #!/bin/sh
 
 EVENTS="close_write,moved_to,create"
-WATCH="./"
+WATCH="../"
 
 inotifywait -mr -e $EVENTS $WATCH |
 while read -r directory events filename; do

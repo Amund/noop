@@ -1,36 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit
-	backupStaticAttributes="false"
 	bootstrap="bootstrap.php"
+	colors="true"
 
-	cacheTokens="false"
-	colors="false"
 	convertErrorsToExceptions="true"
 	convertNoticesToExceptions="true"
 	convertWarningsToExceptions="true"
-	forceCoversAnnotation="false"
-	mapTestClassNameToCoveredClassName="false"
-	printerClass="PHPUnit_TextUI_ResultPrinter"
-
-	processIsolation="false"
+	
 	stopOnError="false"
 	stopOnFailure="false"
 	stopOnIncomplete="false"
 	stopOnSkipped="false"
 	stopOnRisky="false"
-	testSuiteLoaderClass="PHPUnit_Runner_StandardTestSuiteLoader"
 
+	processIsolation="false"
 	strict="false"
 	verbose="false"
 	>
 
     <testsuites>
         <testsuite name="Noop tests">
-        	<directory suffix="Test.php">.</directory>
+        	<directory suffix="Test.php">Noop</directory>
         </testsuite>
-        <testsuite name="App tests">
-        	<directory suffix="Test.php">.</directory>
-        </testsuite>
+        <!--<testsuite name="App tests">
+        	<directory suffix="Test.php">App</directory>
+        </testsuite>-->
     </testsuites>
 
 </phpunit>
