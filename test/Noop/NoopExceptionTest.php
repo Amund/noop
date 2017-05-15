@@ -39,7 +39,6 @@ class NoopExceptionTest extends PHPUnit_Framework_TestCase {
      * @expectedException NoopControllerException
      */
 	function testNoopControllerNotExists() {
-//		print_r( noop::get( 'app' ) );
 		noop::set( 'config/path/controller', __DIR__ );
 		noop::set( 'config/default/controller', 'default' );
 		try {
