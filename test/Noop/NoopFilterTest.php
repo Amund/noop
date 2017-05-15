@@ -1,8 +1,5 @@
 <?php
 
-ini_set( 'display_errors', 1 );
-require_once __DIR__.'/../noop.php';
-
 class NoopFilterTest extends PHPUnit_Framework_TestCase {
 	
 	function testFilter01() {
