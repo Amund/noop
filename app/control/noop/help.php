@@ -2,7 +2,7 @@
 <html>
 <head>
 <title>Help - NOOP</title>
-<link href="https://fonts.googleapis.com/css?family=Fira+Sans:300,300i,400,400i" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Gafata|Oxygen+Mono" rel="stylesheet">
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/railscasts.min.css">
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/languages/php.min.js"></script>
@@ -12,13 +12,13 @@
 <style>
 * { box-sizing:border-box; }
 html { background:#111; }
-body { max-width:960px; margin:auto; font:1em/1.5em 'Fira Sans',tahoma,arial,sans-serif; color:#888; word-spacing: 0.08em; }
-h1,h2,h3,h4,h5,h6 { font-weight:normal; color:#ccc; font-family:"Courier New", Courier, monospace; color:#fff; line-height:1em; }
-h1 { font-size:5em; text-align:center; margin:0; padding:1.5em; color:#fff; }
-h2 { font-size:3em; margin:0; padding:50px 0px 15px; color:#fff; border-bottom:5px solid #333; }
-h3 { font-size:1.8em; margin:0; padding:30px 0px 15px; border-bottom:1px solid #333; }
-h4 { font-size:1.4em; margin:0; padding:20px 0px 15px; color:#888; font-weight:bold; }
-h6 { font-size:1em; margin:0; padding:10px 0 0; }
+body { max-width:960px; margin:auto; font:1.1em/1.5em Gafata,sans-serif; color:#888; word-spacing: 0.08em; }
+h1,h2,h3,h4,h5,h6 { font-weight:normal; color:#ccc; font-family:'Oxygen Mono', monospace; color:#fff; line-height:1em; }
+h1 { font-size:4em; text-align:center; margin:0; padding:1.5em; color:#fff; }
+h2 { font-size:2em; margin:0; padding:50px 0px 15px; color:#fff; border-bottom:5px solid #333; }
+h3 { font-size:1.6em; margin:0; padding:30px 0px 15px; border-bottom:1px solid #333; }
+h4 { font-size:1.3em; margin:0; padding:20px 0px 15px; color:#888; font-weight:bold; }
+h6 { font-size:1.1em; margin:0; padding:10px 0 0; }
 a { color:#fff; }
 a[href="#"] { position:relative; top:0.5em; float:right; font-size:30px; text-decoration:none; }
 p { margin:10px 30px; text-align:justify; }
