@@ -21,11 +21,11 @@ h4 { font-size:1.3em; padding:20px 0px 15px; color:#888; font-weight:bold; }
 h6 { font-size:1.1em; padding:10px 0 0; }
 a { color:#fff; }
 a[href="#"] { position:relative; top:0.5em; float:right; font-size:30px; text-decoration:none; }
-p { margin:10px 30px; text-align:justify; }
-ul { margin:10px 30px; }
+p { margin:10px 15px; text-align:justify; }
+ul { margin:10px 15px; }
 li { margin:0 0 8px 0 }
 code { font-size:1.1em; overflow:auto; padding:0 4px; background:#222; color:#aaa; }
-code.hljs { padding:20px 25px; border:1px solid #444; margin:30px; }
+code.hljs { padding:20px 15px; border:1px solid #444; margin:30px; }
 table { margin:auto; }
 td, th { padding:0.1em 0.8em; }
 
