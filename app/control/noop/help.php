@@ -14,7 +14,7 @@
 html { background:#111; }
 body { max-width:960px; margin:auto; font:1.1em/1.5em Gafata,sans-serif; color:#888; word-spacing: 0.08em; }
 h1,h2,h3,h4,h5,h6 { font-weight:normal; margin:0 5px; color:#ccc; font-family:'Oxygen Mono', monospace; color:#fff; line-height:1em; }
-h1 { font-size:4em; text-align:center; padding:1.5em; color:#fff; }
+h1 { font-size:4em; text-align:center; padding:1.5em; color:#fff; text-transform:lowercase; }
 h2 { font-size:2em; padding:50px 0px 15px; color:#fff; border-bottom:5px solid #333; }
 h3 { font-size:1.6em; padding:30px 0px 15px; border-bottom:1px solid #333; }
 h4 { font-size:1.3em; padding:20px 0px 15px; color:#888; font-weight:bold; }
