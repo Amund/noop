@@ -27,7 +27,8 @@
 <p>See <a href="inspect?with=some&random=parameters">all available data</a> for a request</p>
 <hr>
 
-<p>Need <a href="help">help</a> ?</p>
+<p>Need <a href="noop/help">help</a> ?</p>
 
+<?=noop::inspect()?>
 </body>
 </html>

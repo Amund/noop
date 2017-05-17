@@ -1,1 +1,3 @@
-<?php// prepare your data...noop::set( 'var/title', 'Welcome to Noop !' );noop::set( 'var/content', 'This is a sample page.' );noop::set( 'var/list', array(	'key1'=>'value1',	'key2'=>'value2') );// ...prepare your view...$view = noop::view( 'welcome' );// ...then send it.noop::output( $view, 'html' );
+<?php
+
+noop::redirect( noop::get( 'app-url' ).'/noop', 302 );
