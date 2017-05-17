@@ -1,5 +1,6 @@
 <?php
 
+// 2017 - NOOP 3.0.0
 // 2016 - NOOP 2.0.3
 // 2015 - NOOP 2.0.2
 // 2014 - NOOP 2.0.1
@@ -42,26 +43,29 @@ class noop {
 				'controller'=>'index',
 				'lang'=>'en',
 				'mime'=>'html',
+				'autoload'=>array( 'noop', '_autoload' ),
+				'error_handler'=>array( 'noop', '_error_handler' ),
+				'exception_handler'=>array( 'noop', '_exception' ),
 			),
 			'path'=> array(
-				'controller'=>'secure/control',
-				'model'=>'secure/model',
-				'view'=>'secure/view',
-				//'cache'=>'secure/cache',
+				'controller'=>'app/control',
+				'model'=>'app/model',
+				'view'=>'app/view',
+				'cache'=>'data/cache',
 			),
 			'mime'=>array(
 				'text'=>'text/plain; charset=UTF-8',
 				'html'=>'text/html; charset=UTF-8',
 				'json'=>'application/json; charset=UTF-8',
 			),
-			//'cache'=>array(
-			//	'active'=>FALSE,
-			//),
+			'cache'=>array(
+				'active'=>FALSE,
+			),
 			'pdo'=>array(),
 			'dev'=>array(
 				'debug'=>TRUE,
+				'benchmark'=>TRUE,
 				'inspect'=>'<pre style="font:12px/13px Consolas,\'Lucida Console\',monospace;text-align:left;color:#ddd;background-color:#222;padding:5px;">%s</pre>',
-				'callback'=>array( 'noop', '_exception' ),
 			),
 		),
 		'app'=>array(), // Noop app infos
@@ -71,11 +75,8 @@ class noop {
 		'var'=>array(), // other user vars...
 	);
 	
-	// Merge/replace config array with $var['config']
-	public static function config( $config ) {
-		if( !is_array( $config ) )
-			throw new NoopConfigException( 'Invalid configuration data' );
-		
+	// Merge/replace registry config array with $config
+	public static function config( array $config ) {
 		//self::$var['config'] = array_merge( self::$var['config'], $config );
 		self::$var['config'] = self::_array_extend( self::$var['config'], $config );
 		
@@ -87,10 +88,16 @@ class noop {
 	
 	// Launch Noop app
 	public static function start() {
+
+		// Register autoload
+		if( !empty( self::get( 'config/default/autoload' ) ) )
+			spl_autoload_register( self::get( 'config/default/autoload' ) );
 		
 		// Attach error handlers
-		set_error_handler( array( 'noop', '_error_handler' ) );
-		set_exception_handler( self::get( 'config/dev/callback' ) );
+		set_error_handler( self::get( 'config/default/error_handler' ) );
+		set_exception_handler( self::get( 'config/default/exception_handler' ) );
+
+		// Debug
 		ini_set( 'display_errors', ( self::get( 'config/dev/debug' ) ? 1 : 0 ) );
 		
 		// Start buffering
@@ -120,22 +127,24 @@ class noop {
 	public static function view( $name, $data=NULL, $cache=0 ) {
 		
 		$path = self::$var['config']['path']['view'].'/'.$name.'.php';
-		if( !is_file($path) )
+		if( substr( $path, 0, 1 ) !== '/' )
+			$path = __DIR__.'/'.$path;
+		if( !is_file( $path ) )
 			throw new NoopViewException( 'View "'.$name.'" not found' );
 		
 		$cacheOn = ( !isset( $_GET['no-cache'] ) && self::get( 'config/cache/active' ) == 1 && $cache > 0 );
 		$writeCache = FALSE;
 		
 		if( $cacheOn ) {
-			$cachePath = realpath( self::$var['config']['path']['cache'].DIRECTORY_SEPARATOR.'view' );
+			$cachePath = self::$var['config']['path']['cache'].DIRECTORY_SEPARATOR.'view';
+			if( substr( $cachePath, 0, 1 ) !== '/' )
+				$cachePath = __DIR__.'/'.$cachePath;
 			if( !is_dir( $cachePath ) )
-				mkdir( $cachePath, TRUE );
+				mkdir( $cachePath, 0777,TRUE );
+			$signature = $name.'|'.serialize( $data ).'|'.$cache.'|'.serialize( self::$var );
 			$file[] = $cachePath;
 			$file[] = DIRECTORY_SEPARATOR;
-			$file[] = substr( hash( 'md5', $name ), 0, 8 );
-			$file[] = '-';
-			$file[] = substr( hash( 'md5', json_encode( $data ) ), 0, 8 );
-			$file[] = '.view';
+			$file[] = hash( 'md5', $signature );
 			$file = implode( '', $file );
 			
 			$writeCache = ( !is_file( $file ) || ( time() - filemtime( $file ) >= $cache ) );
@@ -157,7 +166,7 @@ class noop {
 	
 	// Return new PDO connection or use existing one
 	public static function pdo( $name, $pdo_options=NULL ) {
-		// existing pdo object
+		// existing cached pdo object
 		if( isset( self::$var['pdo'][$name] ) )
 			return self::$var['pdo'][$name];
 		// new pdo object
@@ -341,7 +350,8 @@ class noop {
 		// ... or return time
 		$time = self::$var['benchmark'][$name]['stop'] - self::$var['benchmark'][$name]['start'];
 		$time = number_format( round( $time, 6 ), 6 );
-		header( 'X-Benchmark-'.ucfirst( strtolower( $name ) ).': '.$time );
+		if( self::$var['config']['dev']['benchmark'] )
+			header( 'X-Benchmark-'.ucfirst( strtolower( $name ) ).': '.$time );
 		return $time;
 	}
 	
@@ -363,7 +373,8 @@ class noop {
 		$port = (
 			isset( $_SERVER['SERVER_PORT'] ) && in_array( $_SERVER['SERVER_PORT'], array( 80, 443 ) )
 			? ''
-			: ':'.$_SERVER['SERVER_PORT'] );
+			: ':'.$_SERVER['SERVER_PORT']
+		);
 		$dir = dirname( $_SERVER['SCRIPT_NAME'] );
 		$dir = ( $dir=='/' ? '' : $dir );
 		
@@ -372,7 +383,7 @@ class noop {
 		self::set( 'app/port', $port );
 		self::set( 'app/dir', $dir );
 		self::set( 'app/url', $protocol.$host.$port.$dir );
-		self::set( 'app/path', dirname( __FILE__ ) );
+		self::set( 'app/path', __DIR__ );
 	}
 	
 	// Parse request and populate request var
@@ -400,9 +411,15 @@ class noop {
 		
 		$ajax = ( isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && strtolower( $_SERVER['HTTP_X_REQUESTED_WITH'] ) == 'xmlhttprequest' );
 		
-		$method = $_SERVER['REQUEST_METHOD'];
-		if( !empty( $_REQUEST['_method'] ) )
-			$method = $_REQUEST['_method'];
+		$method = (
+			!empty( $_SERVER['REQUEST_METHOD'] )
+			? $_SERVER['REQUEST_METHOD']
+			: (
+				!empty( $_REQUEST['_method'] )
+				? $_REQUEST['_method']
+				: ''
+			)
+		);
 		
 		if( isset( $_SERVER['CONTENT_TYPE'] ) && substr( $_SERVER['CONTENT_TYPE'], 0, 16 ) == 'application/json' )
 			self::set( 'request/json', json_decode( file_get_contents('php://input'), TRUE ) );
@@ -410,15 +427,19 @@ class noop {
 		self::set( 'request/url', $url );
 		self::set( 'request/qs', $qs );
 		self::set( 'request/canonical', $canonical );
-		self::set( 'request/canonical-url', self::$var['app']['url'].$canonical );
 		self::set( 'request/ajax', $ajax );
 		self::set( 'request/method', $method );
+
+		if( isset( self::$var['app']['url'] ) )
+			self::set( 'request/canonical-url', self::$var['app']['url'].$canonical );
 	}
 	
 	// Parse "controller" (request url) and prepare includes list
 	public static function _controller( $url ) {
 		$config_default_controller = self::$var['config']['default']['controller'];
 		$config_path_controller    = rtrim( self::$var['config']['path']['controller'], '/' );
+		if( substr( $config_path_controller, 0, 1 ) !== '/' )
+			$config_path_controller = __DIR__.'/'.$config_path_controller;
 		
 		$segments = trim( urldecode( $url ), '/' );
 		$segments = ( $segments === '' ? $config_default_controller : $segments );
@@ -455,12 +476,22 @@ class noop {
 		}
 		
 		self::set( 'request/controller', $controller );
-
-		self::set( 'request/controller-url', self::$var['app']['url'].$controller );
 		self::set( 'request/trail', trim( $trail, '/' ) );
+
+		if( isset( self::$var['app']['url'] ) )
+			self::set( 'request/controller-url', self::$var['app']['url'].$controller );
 		
 		if( count( self::$var['controllers'] ) == 0 )
 			throw new NoopControllerException( 'Controller "'.self::$var['request']['controller'].'" not found', 404 );
+	}
+
+	// PSR4 Autoload
+	public static function _autoload( $class ) {
+		$base_dir = self::get( 'config/path/model' ).'/';
+		$file = $base_dir.str_replace( '\\', '/', $class ).'.php';
+		if( !is_file( $file ) || !is_readable( $file ) )
+			throw new NoopException( 'Class '.$class.' Not Found', 404 );
+		require $file;
 	}
 	
 	// Error handling

@@ -1,8 +1,5 @@
 <?php
 
-ini_set( 'display_errors', 1 );
-require_once __DIR__.'/../noop.php';
-
 class NoopControllerTest extends PHPUnit_Framework_TestCase {
 	
 	function tearDown() {
@@ -29,14 +26,14 @@ class NoopControllerTest extends PHPUnit_Framework_TestCase {
 		noop::_controller( 'controller' );
 		$this->assertEquals( noop::get( 'request/controller' ), '/controller' );
 		$this->assertEquals( noop::get( 'request/trail' ), '' );
-		$this->assertEquals( noop::get( 'request/includes' ), array(
+		$this->assertEquals( noop::get( 'controllers' ), array(
 			$path.'/controller.php'
 		) );
 		
 		noop::_controller( 'controller/trail' );
 		$this->assertEquals( noop::get( 'request/controller' ), '/controller' );
 		$this->assertEquals( noop::get( 'request/trail' ), 'trail' );
-		$this->assertEquals( noop::get( 'request/includes' ), array(
+		$this->assertEquals( noop::get( 'controllers' ), array(
 			$path.'/controller.php'
 		) );
 	}
@@ -48,7 +45,7 @@ class NoopControllerTest extends PHPUnit_Framework_TestCase {
 		noop::_controller( '' );
 		$this->assertEquals( noop::get( 'request/controller' ), '/index' );
 		$this->assertEquals( noop::get( 'request/trail' ), '' );
-		$this->assertEquals( noop::get( 'request/includes' ), array(
+		$this->assertEquals( noop::get( 'controllers' ), array(
 			$path.'/index.php'
 		) );
 		
@@ -57,7 +54,7 @@ class NoopControllerTest extends PHPUnit_Framework_TestCase {
 		noop::_controller( 'index/trail' );
 		$this->assertEquals( noop::get( 'request/controller' ), '/index' );
 		$this->assertEquals( noop::get( 'request/trail' ), 'trail' );
-		$this->assertEquals( noop::get( 'request/includes' ), array(
+		$this->assertEquals( noop::get( 'controllers' ), array(
 			$path.'/index.php'
 		) );
 	}
@@ -78,14 +75,14 @@ class NoopControllerTest extends PHPUnit_Framework_TestCase {
 		noop::_controller( '' );
 		$this->assertEquals( noop::get( 'request/controller' ), '/index' );
 		$this->assertEquals( noop::get( 'request/trail' ), '' );
-		$this->assertEquals( noop::get( 'request/includes' ), array(
+		$this->assertEquals( noop::get( 'controllers' ), array(
 			$path.'/index.php'
 		) );
 		
 		noop::_controller( 'controller' );
 		$this->assertEquals( noop::get( 'request/controller' ), '/controller' );
 		$this->assertEquals( noop::get( 'request/trail' ), '' );
-		$this->assertEquals( noop::get( 'request/includes' ), array(
+		$this->assertEquals( noop::get( 'controllers' ), array(
 			$path.'/controller.php'
 		) );
 	}
@@ -97,21 +94,21 @@ class NoopControllerTest extends PHPUnit_Framework_TestCase {
 		noop::_controller( 'controller' );
 		$this->assertEquals( noop::get( 'request/controller' ), '/controller' );
 		$this->assertEquals( noop::get( 'request/trail' ), '' );
-		$this->assertEquals( noop::get( 'request/includes' ), array(
+		$this->assertEquals( noop::get( 'controllers' ), array(
 			$path.'/controller.php'
 		) );
 		
 		noop::_controller( 'controller/sub' );
 		$this->assertEquals( noop::get( 'request/controller' ), '/controller' );
 		$this->assertEquals( noop::get( 'request/trail' ), 'sub' );
-		$this->assertEquals( noop::get( 'request/includes' ), array(
+		$this->assertEquals( noop::get( 'controllers' ), array(
 			$path.'/controller.php'
 		) );
 		
 		noop::_controller( 'controller/trail' );
 		$this->assertEquals( noop::get( 'request/controller' ), '/controller' );
 		$this->assertEquals( noop::get( 'request/trail' ), 'trail' );
-		$this->assertEquals( noop::get( 'request/includes' ), array(
+		$this->assertEquals( noop::get( 'controllers' ), array(
 			$path.'/controller.php'
 		) );
 		
@@ -126,7 +123,7 @@ class NoopControllerTest extends PHPUnit_Framework_TestCase {
 		noop::_controller( '' );
 		$this->assertEquals( noop::get( 'request/controller' ), '/index' );
 		$this->assertEquals( noop::get( 'request/trail' ), '' );
-		$this->assertEquals( noop::get( 'request/includes' ), array(
+		$this->assertEquals( noop::get( 'controllers' ), array(
 			$path.'/index.php'
 		) );
 		
@@ -141,14 +138,14 @@ class NoopControllerTest extends PHPUnit_Framework_TestCase {
 		noop::_controller( 'sub/controller' );
 		$this->assertEquals( noop::get( 'request/controller' ), '/sub/controller' );
 		$this->assertEquals( noop::get( 'request/trail' ), '' );
-		$this->assertEquals( noop::get( 'request/includes' ), array(
+		$this->assertEquals( noop::get( 'controllers' ), array(
 			$path.'/sub/controller.php'
 		) );
 		
 		noop::_controller( 'sub/controller/trail' );
 		$this->assertEquals( noop::get( 'request/controller' ), '/sub/controller' );
 		$this->assertEquals( noop::get( 'request/trail' ), 'trail' );
-		$this->assertEquals( noop::get( 'request/includes' ), array(
+		$this->assertEquals( noop::get( 'controllers' ), array(
 			$path.'/sub/controller.php'
 		) );
 		
@@ -163,14 +160,14 @@ class NoopControllerTest extends PHPUnit_Framework_TestCase {
 		noop::_controller( 'sub/sub/controller' );
 		$this->assertEquals( noop::get( 'request/controller' ), '/sub/sub/controller' );
 		$this->assertEquals( noop::get( 'request/trail' ), '' );
-		$this->assertEquals( noop::get( 'request/includes' ), array(
+		$this->assertEquals( noop::get( 'controllers' ), array(
 			$path.'/sub/sub/controller.php'
 		) );
 		
 		noop::_controller( 'sub/sub/controller/trail' );
 		$this->assertEquals( noop::get( 'request/controller' ), '/sub/sub/controller' );
 		$this->assertEquals( noop::get( 'request/trail' ), 'trail' );
-		$this->assertEquals( noop::get( 'request/includes' ), array(
+		$this->assertEquals( noop::get( 'controllers' ), array(
 			$path.'/sub/sub/controller.php'
 		) );
 		
@@ -187,7 +184,7 @@ class NoopControllerTest extends PHPUnit_Framework_TestCase {
 		noop::_controller( 'sub/sub/controller' );
 		$this->assertEquals( noop::get( 'request/controller' ), '/sub/sub/controller' );
 		$this->assertEquals( noop::get( 'request/trail' ), '' );
-		$this->assertEquals( noop::get( 'request/includes' ), array(
+		$this->assertEquals( noop::get( 'controllers' ), array(
 			$path.'/sub.php',
 			$path.'/sub/sub/controller.php'
 		) );
@@ -195,7 +192,7 @@ class NoopControllerTest extends PHPUnit_Framework_TestCase {
 		noop::_controller( 'sub/sub/controller/trail' );
 		$this->assertEquals( noop::get( 'request/controller' ), '/sub/sub/controller' );
 		$this->assertEquals( noop::get( 'request/trail' ), 'trail' );
-		$this->assertEquals( noop::get( 'request/includes' ), array(
+		$this->assertEquals( noop::get( 'controllers' ), array(
 			$path.'/sub.php',
 			$path.'/sub/sub/controller.php'
 		) );
@@ -203,28 +200,28 @@ class NoopControllerTest extends PHPUnit_Framework_TestCase {
 		noop::_controller( 'sub' );
 		$this->assertEquals( noop::get( 'request/controller' ), '/sub' );
 		$this->assertEquals( noop::get( 'request/trail' ), '' );
-		$this->assertEquals( noop::get( 'request/includes' ), array(
+		$this->assertEquals( noop::get( 'controllers' ), array(
 			$path.'/sub.php'
 		) );
 		
 		noop::_controller( 'sub/trail' );
 		$this->assertEquals( noop::get( 'request/controller' ), '/sub' );
 		$this->assertEquals( noop::get( 'request/trail' ), 'trail' );
-		$this->assertEquals( noop::get( 'request/includes' ), array(
+		$this->assertEquals( noop::get( 'controllers' ), array(
 			$path.'/sub.php'
 		) );
 		
 		noop::_controller( 'sub/1/2' );
 		$this->assertEquals( noop::get( 'request/controller' ), '/sub' );
 		$this->assertEquals( noop::get( 'request/trail' ), '1/2' );
-		$this->assertEquals( noop::get( 'request/includes' ), array(
+		$this->assertEquals( noop::get( 'controllers' ), array(
 			$path.'/sub.php'
 		) );
 		
 		noop::_controller( 'sub/sub' );
 		$this->assertEquals( noop::get( 'request/controller' ), '/sub' );
 		$this->assertEquals( noop::get( 'request/trail' ), 'sub' );
-		$this->assertEquals( noop::get( 'request/includes' ), array(
+		$this->assertEquals( noop::get( 'controllers' ), array(
 			$path.'/sub.php'
 		) );
 		
@@ -239,7 +236,7 @@ class NoopControllerTest extends PHPUnit_Framework_TestCase {
 		noop::_controller( 'sub/sub/controller' );
 		$this->assertEquals( noop::get( 'request/controller' ), '/sub/sub/controller' );
 		$this->assertEquals( noop::get( 'request/trail' ), '' );
-		$this->assertEquals( noop::get( 'request/includes' ), array(
+		$this->assertEquals( noop::get( 'controllers' ), array(
 			$path.'/sub/sub.php',
 			$path.'/sub/sub/controller.php'
 		) );
@@ -247,7 +244,7 @@ class NoopControllerTest extends PHPUnit_Framework_TestCase {
 		noop::_controller( 'sub/sub/controller/trail' );
 		$this->assertEquals( noop::get( 'request/controller' ), '/sub/sub/controller' );
 		$this->assertEquals( noop::get( 'request/trail' ), 'trail' );
-		$this->assertEquals( noop::get( 'request/includes' ), array(
+		$this->assertEquals( noop::get( 'controllers' ), array(
 			$path.'/sub/sub.php',
 			$path.'/sub/sub/controller.php'
 		) );
@@ -255,21 +252,21 @@ class NoopControllerTest extends PHPUnit_Framework_TestCase {
 		noop::_controller( 'sub/sub' );
 		$this->assertEquals( noop::get( 'request/controller' ), '/sub/sub' );
 		$this->assertEquals( noop::get( 'request/trail' ), '' );
-		$this->assertEquals( noop::get( 'request/includes' ), array(
+		$this->assertEquals( noop::get( 'controllers' ), array(
 			$path.'/sub/sub.php'
 		) );
 		
 		noop::_controller( 'sub/sub/trail' );
 		$this->assertEquals( noop::get( 'request/controller' ), '/sub/sub' );
 		$this->assertEquals( noop::get( 'request/trail' ), 'trail' );
-		$this->assertEquals( noop::get( 'request/includes' ), array(
+		$this->assertEquals( noop::get( 'controllers' ), array(
 			$path.'/sub/sub.php'
 		) );
 		
 		noop::_controller( 'sub/sub/1/2' );
 		$this->assertEquals( noop::get( 'request/controller' ), '/sub/sub' );
 		$this->assertEquals( noop::get( 'request/trail' ), '1/2' );
-		$this->assertEquals( noop::get( 'request/includes' ), array(
+		$this->assertEquals( noop::get( 'controllers' ), array(
 			$path.'/sub/sub.php'
 		) );
 		
@@ -284,7 +281,7 @@ class NoopControllerTest extends PHPUnit_Framework_TestCase {
 		noop::_controller( 'sub/sub/controller' );
 		$this->assertEquals( noop::get( 'request/controller' ), '/sub/sub/controller' );
 		$this->assertEquals( noop::get( 'request/trail' ), '' );
-		$this->assertEquals( noop::get( 'request/includes' ), array(
+		$this->assertEquals( noop::get( 'controllers' ), array(
 			$path.'/sub.php',
 			$path.'/sub/sub.php',
 			$path.'/sub/sub/controller.php'
@@ -293,7 +290,7 @@ class NoopControllerTest extends PHPUnit_Framework_TestCase {
 		noop::_controller( 'sub/sub/controller/trail' );
 		$this->assertEquals( noop::get( 'request/controller' ), '/sub/sub/controller' );
 		$this->assertEquals( noop::get( 'request/trail' ), 'trail' );
-		$this->assertEquals( noop::get( 'request/includes' ), array(
+		$this->assertEquals( noop::get( 'controllers' ), array(
 			$path.'/sub.php',
 			$path.'/sub/sub.php',
 			$path.'/sub/sub/controller.php'

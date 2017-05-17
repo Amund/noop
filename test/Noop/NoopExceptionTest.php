@@ -1,12 +1,9 @@
 <?php
 
-ini_set( 'display_errors', 1 );
-require_once __DIR__.'/../noop.php';
-
 class NoopExceptionTest extends PHPUnit_Framework_TestCase {
 	
 	function tearDown() {
-		noop::set( 'config/path/controller', 'secure/control/' );
+		noop::set( 'config/path/controller', 'app/control' );
 		noop::set( 'config/default/controller', 'index' );
 	}
 	
