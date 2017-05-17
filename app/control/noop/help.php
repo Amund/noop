@@ -6,8 +6,7 @@
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/railscasts.min.css">
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/languages/php.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/languages/html.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/marked/0.3.1/marked.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/marked/0.3.6/marked.min.js"></script>
 
 <style>
 * { box-sizing:border-box; }
@@ -24,8 +23,8 @@ a[href="#"] { position:relative; top:0.5em; float:right; font-size:30px; text-de
 p { margin:10px 15px; text-align:justify; }
 ul { margin:10px 15px; }
 li { margin:0 0 8px 0 }
-code { font-size:1.1em; overflow:auto; padding:0 4px; background:#222; color:#aaa; }
-code.hljs { padding:20px 15px; border:1px solid #444; margin:30px; }
+code { font-size:1.2em; overflow:auto; padding:0 4px; background:#222; color:#aaa; }
+code.hljs { padding:20px 15px; line-height:1.3; border:1px solid #444; margin:30px; }
 table { margin:auto; }
 td, th { padding:0.1em 0.8em; }
 
