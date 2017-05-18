@@ -1,5 +1,5 @@
-<h1>Noop request inspection, by example</h1>
-<p>Calling <code>noop::start</code> populate the Noop registry with all the details of the request. It's important to check the current state of your app during its development.</p>
+<h1><?=noop::get( 'var/title' )?></h1>
+<p>Calling <code>noop::start()</code> populate the noop registry with all the details of the request. It's important to check the current state of your app during its development.</p>
 <p>You can view parts of this registry anywhere in your code, for example with <code>noop::inspect( 'app' )</code><p>
 <?=noop::inspect( 'app' )?>
 

@@ -65,7 +65,7 @@ class noop {
 			'dev'=>array(
 				'debug'=>TRUE,
 				'benchmark'=>TRUE,
-				'inspect'=>'<pre style="font:12px/13px Consolas,\'Lucida Console\',monospace;text-align:left;color:#ddd;background-color:#222;padding:5px;">%s</pre>',
+				'inspect'=>'<pre style="font:12px/13px Consolas,\'Lucida Console\',monospace;text-align:left;color:#ddd;background-color:#222;padding:5px;overflow:auto;">%s</pre>',
 			),
 		),
 		'app'=>array(), // Noop app infos
@@ -94,8 +94,10 @@ class noop {
 			spl_autoload_register( self::get( 'config/default/autoload' ) );
 		
 		// Attach error handlers
-		set_error_handler( self::get( 'config/default/error_handler' ) );
-		set_exception_handler( self::get( 'config/default/exception_handler' ) );
+		if( !empty( self::get( 'config/default/error_handler' ) ) )
+			set_error_handler( self::get( 'config/default/error_handler' ) );
+		if( !empty( self::get( 'config/default/exception_handler' ) ) )
+			set_exception_handler( self::get( 'config/default/exception_handler' ) );
 
 		// Debug
 		ini_set( 'display_errors', ( self::get( 'config/dev/debug' ) ? 1 : 0 ) );
@@ -110,7 +112,6 @@ class noop {
 		self::_parseApp();
 		self::_parseRequest( $_SERVER['REQUEST_URI'] );
 		self::_controller( self::$var['request']['url'] );
-		
 		
 		// Include controllers
 		foreach( self::$var['controllers'] as $inc )
