@@ -208,7 +208,7 @@ noop::output( NULL, 'html' );
 	
 You'll need a product view `app/view/product.php`, using the $data variable transmitted:
 
-```html
+```php
 <div class="product">
 	<label>ID</label> <?=$data['id']?><br>
 	<label>Name</label> <?=$data['name']?><br>
@@ -219,7 +219,7 @@ You'll need a product view `app/view/product.php`, using the $data variable tran
 
 To avoid warnings on non-existent keys in $data, we can also use `noop::get` on `$data`, as a filter:
 
-```html
+```php
 <div class="product">
 	<label>ID</label> <?=noop::get( 'id', $data )?><br>
 	<label>Name</label> <?=noop::get( 'name', $data )?><br>
@@ -230,7 +230,7 @@ To avoid warnings on non-existent keys in $data, we can also use `noop::get` on 
 
 And we also need a reusable standard page view `app/view/page.php`:
 
-```html
+```php
 <!DOCTYPE html>
 <html>
 <head>
@@ -285,7 +285,7 @@ echo noop::view( 'page' );
 	
 We modify the product view, to get data directly from the registry:
 
-```html
+```php
 <div class="product">
 	<label>ID</label> <?=noop::get( 'var/product/id' )?><br>
 	<label>Type</label> <?=noop::get( 'var/product/type' )?><br>
@@ -297,7 +297,7 @@ We modify the product view, to get data directly from the registry:
 
 And the page view too:
 
-```html
+```php
 <!DOCTYPE html>
 <html>
 <head>
