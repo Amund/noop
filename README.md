@@ -29,28 +29,32 @@ All datas in `noop` are stored in a unique multilevel associative array, its reg
 
 During your development, you can inspect this registry at any time with the method [`inspect`](#method-inspect).
     
-	// Inspect all the registry...
-	echo noop::inspect();
+```php
+// Inspect all the registry...
+echo noop::inspect();
 
-    // ...or a part...
-	echo noop::inspect( 'config' );
+// ...or a part...
+echo noop::inspect( 'config' );
 
-    // ...or a part of a part...
-	echo noop::inspect( 'config/path' );
+// ...or a part of a part...
+echo noop::inspect( 'config/path' );
 
-	// ...or... you got it.
-	echo noop::inspect( 'config/path/controller' );
-	
+// ...or... you got it.
+echo noop::inspect( 'config/path/controller' );
+```
+
 You can also manage all these keys with the [`get`](#method-get), [`set`](#method-set) and [`del`](#method-del) methods.
 	
-	// Store a new key...
-	noop::set( 'var/foo', 'bar' );
+```php
+// Store a new key...
+noop::set( 'var/foo', 'bar' );
 
-    // ...display it...
-	echo noop::get( 'var/foo' );
+// ...display it...
+echo noop::get( 'var/foo' );
 
-    // ...and remove it
-	noop::del( 'var/foo' );
+// ...and remove it
+noop::del( 'var/foo' );
+```
 
 Because it is a simple associative array, you can do any manipulation you want in the registry. But all the root's keys (except `var`) are internally managed, so use them with caution.
 
@@ -71,27 +75,31 @@ If you already have an autoload, you can register it before `noop::start()` in `
 
 A controller in `noop` is a PHP script file, or a collection of script files, located in the controller folder. By default, this folder is `app/control`, and can be modified in the `config.php`, by setting a new path for the key `path/controller`. There is also a default controller, `index`, that can be overriden the same way, for the key `default/controller`. I'll explain its usage next.
 
-    noop::config( array(
+```php
+noop::config( array(
+	// ...
+	'default'=> array(
+		'controller'=> 'homepage'
 		// ...
-        'default'=> array(
-			'controller'=> 'homepage'
-			// ...
-		),
-		'path'=> array(
-			'controller'=> 'my/new/path'
-			// ...
-		)
+	),
+	'path'=> array(
+		'controller'=> 'my/new/path'
 		// ...
-    ) );
+	)
+	// ...
+) );
+```
 
 Or, since PHP 5.4, with the short syntax.
 
-    noop::config( [
-		// ...
-        'default'=> [ 'controller'=> 'homepage' ],
-		'path'=> [ 'controller'=> 'my/new/path' ]
-		// ...
-	] );
+```php
+noop::config( [
+	// ...
+	'default'=> [ 'controller'=> 'homepage' ],
+	'path'=> [ 'controller'=> 'my/new/path' ]
+	// ...
+] );
+```
 
 Then, here's the fun part.
 
@@ -100,19 +108,22 @@ The controller is called by an URL, as many other MVC framework. But no routing 
 
 Consider this controllers folder :
 
-    /[noop-path]
-		/app
-			/control
-				/product
-					acme.php
-				index.php
-				product.php
+```
+/[noop-path]
+	/app
+		/control
+			/product
+				acme.php
+			index.php
+			product.php
+```
 
 Then, copy/paste this code in `index.php` and `product.php`.
 
-    <?php
-	echo noop::inspect( 'request' ); // details on how the URL is parsed
-	echo noop::inspect( 'controllers' ); // What files will be included
+```php
+echo noop::inspect( 'request' ); // details on how the URL is parsed
+echo noop::inspect( 'controllers' ); // What files will be included
+```
 
 Finally, take a breath, and try some URL.
 
@@ -134,12 +145,14 @@ There is a `product.php` file, it will be included.
 Same as above, but with a long trail. To use this list of parameters in your controller, just [`explode`](http://php.net/explode) it.
 
 
-    $trails = explode( '/', noop::get( 'request/trail' ) );
-	// Array (
-    //     [0] => anvil
-    //     [1] => black
-    //     [2] => iron
-    // )
+```php
+$trails = explode( '/', noop::get( 'request/trail' ) );
+// Array (
+//     [0] => anvil
+//     [1] => black
+//     [2] => iron
+// )
+```
 
 
 If you've got this, you've done the hardest part of `noop`.
@@ -158,74 +171,80 @@ We want a page to display a product detail, say... hmm... an anvil. From acme. T
 
 Consider the following controller `app/controller/product.php`. I let you implement the class `Product`, in a file `app/model/Product.php` [for example](#models-noop-).
 
-    <?php
-	
-	// We get the product id from the request
-	$id = $_GET['id'];
-	
-	// In a real app, you'll then create a product instance
-	// $product = new Product();
+```php
+// We get the product id from the request
+$id = $_GET['id'];
 
-	// Load the product with id 123 from database
-	// $product->load( $id );
+// In a real app, you'll then create a product instance
+// $product = new Product();
 
-	// Get all product properties as array
-	// $product_data = $product->data();
+// Load the product with id 123 from database
+// $product->load( $id );
 
-	// to finally obtain :
-	$product_data = array( 'id'=>123, 'name'=>'Anvil', 'matter'=>'Iron', 'color'=>'Black' )
-	
-	// We load the "product" view,
-	// inject product data in it,
-	// and store the returned string
-	$product_view = noop::view( 'product', $product_data );
-	
-	// Prepare the final page
-	$data = array();
-	$data['title'] = 'Product details';
-	$data['content'] = $product_view;
-	
-	// We get the "page" view,
-	// inject $data in it (with the product view),
-	// and echo it, this time
-	echo noop::view( 'page', $data );
-	
-	// Then return output to browser.
-	noop::output( NULL, 'html' );
+// Get all product properties as array
+// $product_data = $product->data();
+
+// to finally obtain :
+$product_data = array( 'id'=>123, 'name'=>'Anvil', 'matter'=>'Iron', 'color'=>'Black' )
+
+// We load the "product" view,
+// inject product data in it,
+// and store the returned string
+$product_view = noop::view( 'product', $product_data );
+
+// Prepare the final page
+$data = array();
+$data['title'] = 'Product details';
+$data['content'] = $product_view;
+
+// We get the "page" view,
+// inject $data in it (with the product view),
+// and echo it, this time
+echo noop::view( 'page', $data );
+
+// Then return output to browser.
+noop::output( NULL, 'html' );
+```
 	
 You'll need a product view `app/view/product.php`, using the $data variable transmitted:
 
-    <div class="product">
-		<label>ID</label> <?=$data['id']?><br>
-		<label>Name</label> <?=$data['name']?><br>
-		<label>Matter</label> <?=$data['matter']?><br>
-		<label>Color</label> <?=$data['color']?><br>
-	</div>
+```
+<div class="product">
+	<label>ID</label> <?=$data['id']?><br>
+	<label>Name</label> <?=$data['name']?><br>
+	<label>Matter</label> <?=$data['matter']?><br>
+	<label>Color</label> <?=$data['color']?><br>
+</div>
+```
 
 To avoid warnings on non-existent keys in $data, we can also use `noop::get` on `$data`, as a filter:
 
-    <div class="product">
-		<label>ID</label> <?=noop::get( 'id', $data )?><br>
-		<label>Name</label> <?=noop::get( 'name', $data )?><br>
-		<label>Matter</label> <?=noop::get( 'matter', $data )?><br>
-		<label>Color</label> <?=noop::get( 'color', $data )?><br>
-	</div>
+```
+<div class="product">
+	<label>ID</label> <?=noop::get( 'id', $data )?><br>
+	<label>Name</label> <?=noop::get( 'name', $data )?><br>
+	<label>Matter</label> <?=noop::get( 'matter', $data )?><br>
+	<label>Color</label> <?=noop::get( 'color', $data )?><br>
+</div>
+```
 
 And we also need a reusable standard page view `app/view/page.php`:
 
-    <!DOCTYPE html>
-	<html>
-	<head>
-		<title><?=noop::get( 'title', $data )?></title>
-	</head>
-	<body>
+```
+<!DOCTYPE html>
+<html>
+<head>
+	<title><?=noop::get( 'title', $data )?></title>
+</head>
+<body>
+
+	<h1><?=noop::get( 'title', $data )?></h1>
 	
-		<h1><?=noop::get( 'title', $data )?></h1>
-		
-		<?=noop::get( 'content', $data )?>
-		
-	</body>
-	</html>
+	<?=noop::get( 'content', $data )?>
+	
+</body>
+</html>
+```
 
 With all those files, you can now check `http://localhost/product?id=123` in your browser.
 
@@ -240,55 +259,59 @@ In this array, there is a special place you are encouraged to store in, it's `va
 And as we rewrite, we will also use the controller trail instead of querystring. URL will become `http://localhost/product/123`
 
 	
-    <?php
-	
-	// Load product
-	$id = noop::get( 'request/trail' );
+```php
+// Load product
+$id = noop::get( 'request/trail' );
 
-	// Same as previously, we load product and get properties
-	// $product = new Product();
-	// $product->load( $id );
-	// $product_data = $product->data();
-	// to obtain :
-	$product_data = array( 'id'=>123, 'name'=>'Anvil', 'matter'=>'Iron', 'color'=>'Black' )
-	// But this time, we store them in the `noop` registry
-	noop::set( 'var/product', $product_data );
-	
-	// Store the compiled product view in the `noop` registry
-	noop::set( 'var/product/view', noop::view( 'product' ) );
-	
-	// Set the page title
-	noop::set( 'var/title', 'Product details' );
-	
-	// Then echo page
-	echo noop::view( 'page' );
+// Same as previously, we load product and get properties
+// $product = new Product();
+// $product->load( $id );
+// $product_data = $product->data();
+// to obtain :
+$product_data = array( 'id'=>123, 'name'=>'Anvil', 'matter'=>'Iron', 'color'=>'Black' )
+// But this time, we store them in the `noop` registry
+noop::set( 'var/product', $product_data );
+
+// Store the compiled product view in the `noop` registry
+noop::set( 'var/product/view', noop::view( 'product' ) );
+
+// Set the page title
+noop::set( 'var/title', 'Product details' );
+
+// Then echo page
+echo noop::view( 'page' );
+```
 	
 	
 We modify the product view, to get data directly from the registry:
 
-    <div class="product">
-		<label>ID</label> <?=noop::get( 'var/product/id' )?><br>
-		<label>Type</label> <?=noop::get( 'var/product/type' )?><br>
-		<label>Name</label> <?=noop::get( 'var/product/name' )?><br>
-		<label>Matter</label> <?=noop::get( 'var/product/matter' )?><br>
-		<label>Color</label> <?=noop::get( 'var/product/color' )?><br>
-	</div>
+```
+<div class="product">
+	<label>ID</label> <?=noop::get( 'var/product/id' )?><br>
+	<label>Type</label> <?=noop::get( 'var/product/type' )?><br>
+	<label>Name</label> <?=noop::get( 'var/product/name' )?><br>
+	<label>Matter</label> <?=noop::get( 'var/product/matter' )?><br>
+	<label>Color</label> <?=noop::get( 'var/product/color' )?><br>
+</div>
+```
 
 And the page view too:
 
-    <!DOCTYPE html>
-	<html>
-	<head>
-		<title><?=noop::get( 'var/title' )?></title>
-	</head>
-	<body>
+```
+<!DOCTYPE html>
+<html>
+<head>
+	<title><?=noop::get( 'var/title' )?></title>
+</head>
+<body>
+
+	<h1><?=noop::get( 'var/title' )?></h1>
 	
-		<h1><?=noop::get( 'var/title' )?></h1>
-		
-		<?=noop::get( 'var/product/view' )?>
-		
-	</body>
-	</html>
+	<?=noop::get( 'var/product/view' )?>
+	
+</body>
+</html>
+```
 
 #### Choose your path
 Obviously, there is no best way, it's just a matter of taste. You can choose a way, or mix them, or whatever. That's what I call unopinionated.
@@ -312,14 +335,16 @@ Set/Get some benchmarks, to trap too long functions, etc... during the developme
 - If `$action` is NULL, return the benchmark value, in seconds.
 
 ###### Example
-    noop::benchmark( 'mylongloop', TRUE ); // start
-    //...some code to evaluate...
-    noop::benchmark( 'mylongloop', FALSE ); // stop
+```php
+noop::benchmark( 'mylongloop', TRUE ); // start
+//...some code to evaluate...
+noop::benchmark( 'mylongloop', FALSE ); // stop
 
-    // ...then print
-    echo noop::benchmark( 'mylongloop' ); // '0.123456', in seconds
-    
-    // Additionally, you'll find a "X-Benchmark-mylongloop: 0.123456" in HTTP response headers
+// ...then print
+echo noop::benchmark( 'mylongloop' ); // '0.123456', in seconds
+
+// Additionally, you'll find a "X-Benchmark-mylongloop: 0.123456" in HTTP response headers
+```
 
 
 
@@ -339,23 +364,27 @@ Check if $var match the regexp $reg.
 ###### Example
 Simple version, with strings
 
-    $test = noop::check( '#\d+#', '123' );
-    var_dump( $test ); // => TRUE
+```php
+$test = noop::check( '#\d+#', '123' );
+var_dump( $test ); // => TRUE
 
-    $test = noop::check( '#\d+#', 'my test' );
-    var_dump( $test ); // => FALSE
+$test = noop::check( '#\d+#', 'my test' );
+var_dump( $test ); // => FALSE
+```
 
 Less simple version, with arrays
 
-    $reg = array( 'a'=>'#\d+#', 'b'=>'#\w{1,}#' );
-    $var = array( 'a'=>'123', 'b'=>'is checked', 'c'=>'is not checked' )
-    $errors = noop::check( $reg, $var );
-    var_dump( $test ); // => array()
+```php
+$reg = array( 'a'=>'#\d+#', 'b'=>'#\w{1,}#' );
+$var = array( 'a'=>'123', 'b'=>'is checked', 'c'=>'is not checked' )
+$errors = noop::check( $reg, $var );
+var_dump( $test ); // => array()
 
-    $reg = array( 'a'=>'#\d+#', 'b'=>'#\w{1,}#' );
-    $var = array( 'a'=>'wrong', 'b'=>'right', 'c'=>'is not checked' )
-    $errors = noop::check( $reg, $var );
-    var_dump( $test ); // => array( 'a'=>FALSE )
+$reg = array( 'a'=>'#\d+#', 'b'=>'#\w{1,}#' );
+$var = array( 'a'=>'wrong', 'b'=>'right', 'c'=>'is not checked' )
+$errors = noop::check( $reg, $var );
+var_dump( $test ); // => array( 'a'=>FALSE )
+```
 
 
 	
@@ -368,33 +397,35 @@ Extend/Override `noop` configuration registry. You can load different parts of a
 - `$config` Required, Array
 
 ###### Example
-    var_dump( noop::get( 'config' ) );
-    
-    // Array (
-    //     [default] => Array (
-    //         [controller] => index
-    //         [lang] => en
-    //         [mime] => html
-    //     )
-    // ...
-    
-    $config = array(
-        'default'=>array(
-            'controller'=>'default',
-            'lang'=>'fr'
-        )
-    );
-    noop::config( $config );
-    
-    var_dump( noop::get( 'config' ) );
-    
-    // Array (
-    //     [default] => Array (
-    //         [controller] => default
-    //         [lang] => fr
-    //         [mime] => html
-    //     )
-    // ...
+```php
+var_dump( noop::get( 'config' ) );
+
+// Array (
+//     [default] => Array (
+//         [controller] => index
+//         [lang] => en
+//         [mime] => html
+//     )
+// ...
+
+$config = array(
+	'default'=>array(
+		'controller'=>'default',
+		'lang'=>'fr'
+	)
+);
+noop::config( $config );
+
+var_dump( noop::get( 'config' ) );
+
+// Array (
+//     [default] => Array (
+//         [controller] => default
+//         [lang] => fr
+//         [mime] => html
+//     )
+// ...
+```
 
 
 
@@ -412,23 +443,25 @@ Delete a key in an array, based on a virtual `path` to this key.
 - Otherwise, the deleted value is returned
 
 ###### Example
-    $myarr = array(
-        'path'=>array(
-            'to'=>array(
-                'key'=>'value'
-            )
-        )
-    );
-    
-    noop::del( 'path/to/key', $myarr );
+```php
+$myarr = array(
+	'path'=>array(
+		'to'=>array(
+			'key'=>'value'
+		)
+	)
+);
 
-    // Array (
-    //     [path] => Array (
-    //         [to] => Array
-    //             (
-    //             )
-    //     )
-    // )
+noop::del( 'path/to/key', $myarr );
+
+// Array (
+//     [path] => Array (
+//         [to] => Array
+//             (
+//             )
+//     )
+// )
+```
 
 
 <a name="method-filter"></a>
@@ -443,13 +476,15 @@ Perform a filter on an array with a whitelist of keys. Other keys are removed.
 - A new array, with only withelisted keys
 
 ###### Example
-    // http://test/?q=42&lang=fr&out=txt&referer=
-    $request = noop::filter( $_GET, array( 'q', 'lang' ) );
-    
-    // Array (
-    //     [q] => 42
-    //     [lang] => fr
-    // )
+```php
+// http://test/?q=42&lang=fr&out=txt&referer=
+$request = noop::filter( $_GET, array( 'q', 'lang' ) );
+
+// Array (
+//     [q] => 42
+//     [lang] => fr
+// )
+```
 
 
 
@@ -467,15 +502,17 @@ Get a value from an array, based on a virtual `$path` to its key.
 - Otherwise, `NULL`
 
 ###### Example
-    $myarr = array(
-        'path'=>array(
-            'to'=>array(
-                'key'=>'value'
-            )
-        )
-    );
-    
-    echo noop::get( 'path/to/key', $myarr ); // => 'value'
+```php
+$myarr = array(
+	'path'=>array(
+		'to'=>array(
+			'key'=>'value'
+		)
+	)
+);
+
+echo noop::get( 'path/to/key', $myarr ); // => 'value'
+```
 
 
 
@@ -491,8 +528,10 @@ Development tool to inspect variable in a readable way.
 - Print formatted string representation of the variable if `$return` is TRUE
 
 ###### Example
-    // To have a look on current request
-    echo noop::inspect( 'request' );
+```php
+// To have a look on current request
+echo noop::inspect( 'request' );
+```
 
 
 <a name="method-output"></a>
@@ -522,17 +561,18 @@ Example: `'mysql,host=localhost;dbname=db,admin,fZ5GdsV4'`
 ###### Example
 Setup databases connections
 
-    noop::config( array(
-        'pdo'=>array(
-            'db1'=>'mysql,host=localhost;dbname=db1,user1,password1',
-            'db2'=>'mysql,host=localhost;dbname=db2,user2,password2',
-        )
-    ) );
-
+```php
+noop::config( array(
+	'pdo'=>array(
+		'db1'=>'mysql,host=localhost;dbname=db1,user1,password1',
+		'db2'=>'mysql,host=localhost;dbname=db2,user2,password2',
+	)
+) );
+```
 Then use them anywhere
-
-    $stmt = noop::pdo( 'db1' )->query( 'SELECT * FROM table' );
-
+```php
+$stmt = noop::pdo( 'db1' )->query( 'SELECT * FROM table' );
+```
 
 <a name="method-redirect"></a>
 ### redirect( `$url`[, `$code`] ) [^](#noop)
@@ -543,12 +583,13 @@ Stop the current script, and make an HTTP redirect to `url`.
 - `$code` Optional, Integer. The HTTP redirect code. Default to `'302'`
 
 ###### Example
-    // An external URL
-	noop::redirect( 'http://www.google.com/' );
-	
-	// or a relative URL
-	noop::redirect( noop::get( 'app-url' ).'/contact' );
+```php
+// An external URL
+noop::redirect( 'http://www.google.com/' );
 
+// or a relative URL
+noop::redirect( noop::get( 'app-url' ).'/contact' );
+```
 
 <a name="method-set"></a>
 ### set( `$path`, `$value`[, `$array`] ) [^](#noop)
@@ -563,21 +604,22 @@ Set a value from an array, based on a virtual `$path` to its key.
 - `TRUE`
 
 ###### Example
-    $arr = array();
-    noop::set( 'first', 'foo', $arr );
-    noop::set( 'second/key', array( 1, 2, 3 ), $arr );
-    
-    // Array (
-    //     [first] => foo
-    //     [second] => Array (
-    //         [key] => Array (
-    //             [0] => 1
-    //             [1] => 2
-    //             [2] => 3
-    //         )
-    //     )
-    // )
+```php
+$arr = array();
+noop::set( 'first', 'foo', $arr );
+noop::set( 'second/key', array( 1, 2, 3 ), $arr );
 
+// Array (
+//     [first] => foo
+//     [second] => Array (
+//         [key] => Array (
+//             [0] => 1
+//             [1] => 2
+//             [2] => 3
+//         )
+//     )
+// )
+```
 
 
 <a name="method-start"></a>
@@ -587,7 +629,6 @@ Launch `noop` app with the current configuration. In the registry, `app`, `reque
 All configuration variables must be modified **before** this method.
 
 After controllers inclusion, there is an implicit call to `noop::output()`.
-
 
 
 <a name="method-status"></a>
