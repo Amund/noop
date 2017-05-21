@@ -493,6 +493,8 @@ class noop {
 	public static function _autoload( $class ) {
 		$base_dir = self::get( 'config/path/model' ).'/';
 		$file = $base_dir.str_replace( '\\', '/', $class ).'.php';
+		if( substr( $file, 0, 1 ) !== '/' )
+			$file = __DIR__.'/'.$file;
 		if( !is_file( $file ) || !is_readable( $file ) )
 			throw new NoopException( 'Class '.$class.' Not Found', 404 );
 		require $file;
