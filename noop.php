@@ -410,7 +410,10 @@ class noop {
 		//	self::redirect( self::get( 'app/url' ).$canonical );
 		//$canonical = self::get( 'app/url' ).$canonical;
 		
-		$ajax = ( isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && strtolower( $_SERVER['HTTP_X_REQUESTED_WITH'] ) == 'xmlhttprequest' );
+		$ajax = (
+			isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && strtolower( $_SERVER['HTTP_X_REQUESTED_WITH'] ) == 'xmlhttprequest'
+			|| isset( $_REQUEST['_ajax'] )
+		);
 		
 		$method = (
 			!empty( $_SERVER['REQUEST_METHOD'] )
