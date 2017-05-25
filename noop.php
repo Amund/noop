@@ -110,7 +110,7 @@ class noop {
 		
 		// Process request
 		self::_parseApp();
-		self::_parseRequest( $_SERVER['REQUEST_URI'] );
+		self::_parseRequest( rawurldecode( $_SERVER['REQUEST_URI'] ) );
 		self::_controller( self::$var['request']['url'] );
 		
 		// Include controllers
