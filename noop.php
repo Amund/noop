@@ -445,7 +445,7 @@ class noop {
 		if( substr( $config_path_controller, 0, 1 ) !== '/' )
 			$config_path_controller = __DIR__.'/'.$config_path_controller;
 		
-		$segments = trim( urldecode( $url ), '/' );
+		$segments = trim( $url, '/' );
 		$segments = ( $segments === '' ? $config_default_controller : $segments );
 		if( $segments === '' || !is_dir( $config_path_controller ) )
 			throw new NoopConfigException( 'Controller path not found' );
