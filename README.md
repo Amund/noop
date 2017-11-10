@@ -588,7 +588,7 @@ Stop the current script, and make an HTTP redirect to `url`.
 noop::redirect( 'http://www.google.com/' );
 
 // or a relative URL
-noop::redirect( noop::get( 'app-url' ).'/contact' );
+noop::redirect( noop::get( 'app/url' ).'/contact' );
 ```
 
 <a name="method-set"></a>
